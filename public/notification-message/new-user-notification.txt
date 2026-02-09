@@ -1,0 +1,14 @@
+Halo #NAME#
+
+Akun Samco App Anda sudah dapat digunakan. Berikut adalah Email dan Password Anda:
+
+Email   : #EMAIL#
+Password: #PASSWORD#
+Kode Pegawai : #EMPLOYEE_CODE#
+
+Silahkan login Samco App kemudian ubah password demi menjaga kerahasiaan data Anda.
+
+
+Salam,
+PT. Samco Farma
+

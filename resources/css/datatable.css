@@ -1,0 +1,99 @@
+.rdt_TableCol input[type="checkbox"],
+.rdt_TableCell input[type="checkbox"] {
+    appearance: auto !important;
+    -webkit-appearance: checkbox !important;
+    -moz-appearance: checkbox !important;
+    display: inline-block !important;
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: 16px !important;
+    height: 16px !important;
+    cursor: pointer !important;
+    accent-color: red;
+}
+
+/* Hilangkan gap antar tabel */
+.datatable-wrapper {
+    padding: 0;
+    margin: 0;
+}
+
+/* Biar border kiri & kanan ketemu */
+.col-6:first-child .rdt_Table {
+    border-right: none !important;
+}
+
+.col-6:last-child .rdt_Table {
+    border-left: none !important;
+}
+
+/* Samakan tinggi header */
+.rdt_TableHeadRow {
+    min-height: 55px !important;
+}
+
+/* Samakan background header kiri & kanan */
+.rdt_TableHeadRow,
+.rdt_TableHead {
+    background: #f8f9fa !important;
+}
+
+/* Hilangkan radius biar nyatu */
+.rdt_Table {
+    border-radius: 0 !important;
+}
+
+/* Biar tingginya pas */
+.rdt_TableRow {
+    min-height: 48px !important;
+}
+
+/* Garis horizontal rapi */
+.rdt_TableRow:not(:last-child) {
+    border-bottom: 1px solid #e2e2e2 !important;
+}
+
+.table-wrapper {
+    max-height: auto; /* wajib */
+    overflow: auto; /* wajib */
+}
+/* BASE FREEZE STYLE */
+.table-freeze th,
+.table-freeze td {
+    z-index: 1;
+}
+
+/* Kolom 1 - No */
+.table-freeze th:nth-child(1),
+.table-freeze td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 99;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Kolom 2 - Impact Category */
+.table-freeze th:nth-child(2),
+.table-freeze td:nth-child(2) {
+    position: sticky;
+    left: 70px; /* lebar kolom 1 */
+    z-index: 99;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Kolom 3 - Impact of Change */
+.table-freeze th:nth-child(3),
+.table-freeze td:nth-child(3) {
+    position: sticky;
+    left: 250px; /* 70 + 200 */
+    z-index: 99;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Header tetap di atas */
+.table-freeze thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}

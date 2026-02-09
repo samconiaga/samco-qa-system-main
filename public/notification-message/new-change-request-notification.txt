@@ -1,0 +1,14 @@
+Halo #NAME#
+
+Ada Permintaan Pengendalian Perubahan Baru Yang Diajukan, Berikut Detailnya:
+-------------------------------
+Inisiator : *#INITIATOR#*
+Judul : *#TITLE#*
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+

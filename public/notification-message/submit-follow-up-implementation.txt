@@ -1,0 +1,19 @@
+Halo #NAME#,
+
+Kami ingin memberitahukan bahwa ada implementasi tindak lanjut baru yang telah dikirimkan dan menunggu persetujuan. Berikut adalah detailnya:
+-------------------------------
+
+Judul Permintaan :  *#TITLE#*
+Nomor Usulan : *#REQUEST_NUMBER#*
+Kategori Dampak Perubahan : *#IMPACT_OF_CHANGE_CATEGORY#*
+PIC  : *#PIC#*
+Realisasi : *#REALIZATION#*
+
+-------------------------------
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+
+

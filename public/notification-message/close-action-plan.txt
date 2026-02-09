@@ -1,0 +1,16 @@
+Halo #NAME#
+
+
+Kami ingin memberitahukan bahwa rencana tindakan yang anda kerjakan telah selesai. Berikut adalah detailnya:
+-------------------------------
+*Judul Permintaan* :  #TITLE#
+*Nomor Usulan* : #REQUEST_NUMBER#
+*Perubahan yang Diusulkan* : #PROPOSED_CHANGE#
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+

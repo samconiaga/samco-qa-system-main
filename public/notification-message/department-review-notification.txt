@@ -1,0 +1,13 @@
+Halo #NAME#,
+
+Semua Depertemen telah memberikan hasil evaluasi untuk permintaan pengendalian perubahan berikut:
+
+----------------------------------------
+*Judul Permintaan*   : #TITLE#  
+*Nomor Usulan*       : #REQUEST_NUMBER#  
+----------------------------------------
+
+Jika ada pertanyaan atau kendala, silakan menghubungi department head terkait untuk klarifikasi lebih lanjut.
+
+Salam hormat,  
+PT. Samco Farma

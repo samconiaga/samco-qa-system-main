@@ -1,0 +1,120 @@
+.outline-danger:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    outline: none;
+}
+.outline-danger {
+    border-color: #dc3545 !important;
+    outline: none;
+}
+/* Navbar layer */
+.navbar-header {
+    position: relative;
+    z-index: 10;
+}
+
+/* ===== PROFILE PORTAL ===== */
+.profile-portal {
+    position: fixed;
+    top: 64px; /* tinggi navbar */
+    right: 24px;
+    z-index: 99999;
+}
+
+/* Card */
+.profile-card {
+    width: 260px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+/* Header */
+.profile-header {
+    padding: 12px 16px;
+    background: #eef4ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Menu */
+.profile-menu {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+}
+
+.profile-menu li a,
+.profile-menu li button {
+    width: 100%;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.profile-menu li a:hover,
+.profile-menu li button:hover {
+    background: #f5f7fa;
+}
+
+.nav-link {
+    color: black !important;
+}
+
+.detail-item {
+    display: grid;
+    grid-template-columns: 260px 20px 1fr;
+    align-items: start;
+    margin-bottom: 14px;
+}
+
+.detail-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.detail-colon {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.detail-value {
+    font-size: 14px;
+    color: #000000;
+    word-break: break-word;
+    white-space: normal;
+}
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.file-item span {
+    cursor: text;
+}
+.file-item span:hover {
+    text-decoration: underline;
+}
+.file-item:hover {
+    background-color: #f8f9fa;
+}
+.file-rename-input {
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.file-rename-input:focus {
+    border-color: #ff0000;
+    box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.2);
+}

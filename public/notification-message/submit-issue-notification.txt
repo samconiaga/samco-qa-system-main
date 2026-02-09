@@ -1,0 +1,17 @@
+Halo #NAME#
+
+Ada Penyelesaian Issue Yang Baru Dikirim Untuk Kamu, Berikut Detail Issuenya:
+-------------------------------
+Nomor : #ISSUE_NUMBER#
+Subjek : *#SUBJECT#*
+Temuan : *#FINDING#*
+Kriteria : *#CRITERIA#*
+Tenggat Waktu : *#DEADLINE#*
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+

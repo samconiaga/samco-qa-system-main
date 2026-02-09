@@ -1,0 +1,7 @@
+1. Manager Inisiator Edit Sekaligus Approve
+2. Pengisian Tindakan Sesuai Di Gambar (Skala Prioritas Di Hilangkan)
+3. Action Plan Tinggal Upload Dan Komentar/Deskripsi (Opsionall)
+4. Pertanyaan Apakah Material Atau Kegiatan Yang Digunakan Berkaitan Dengan Produk Halal? Dan Fasilitas (Masuk Ke RND)
+5. Penilaian Regulasi Di Hapus
+6. Semua Change Control Melewat RND
+7. Tindakan Semua Departemen Bisa Lihat Akan Tetapi Tidak Bisa Edit

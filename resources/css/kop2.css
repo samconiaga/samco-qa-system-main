@@ -1,0 +1,50 @@
+.kop-wrapper {
+    border: 1.25pt solid #000;
+    margin-bottom: 0.6cm;
+}
+
+.kop-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kop-left {
+    width: 20%;
+    text-align: center;
+    vertical-align: middle;
+    border-right: 1pt solid #000;
+     padding: 1mm 2mm;
+}
+
+.kop-left img {
+    height: 22mm;
+    margin-bottom: 2mm;
+}
+
+.kop-company {
+    font-size: 9pt;
+    font-weight: bold;
+}
+
+.kop-right {
+    width: 72%;
+    text-align: center;
+    vertical-align: middle;
+    padding: 1mm 2mm;
+}
+
+.kop-title {
+    font-size: 13pt;
+    font-weight: bold;
+    line-height: 1.1; /* ← KUNCI supaya tidak tinggi */
+}
+
+.kop-subtitle {
+    font-size: 11pt;
+    font-style: italic;
+    margin-top: 1mm;
+}
+.kop-wrapper * {
+    margin: 0;
+    padding: 0;
+}

@@ -1,0 +1,13 @@
+.ck-content ul,
+.ck-content ol {
+    list-style-position: outside;
+    padding-left: 1.5rem;
+    margin-left: 0;
+}
+.ck-content li {
+    margin-left: 0;
+}
+.ck-content em,
+.ck-content i {
+    font-style: italic !important;
+}

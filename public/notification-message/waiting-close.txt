@@ -1,0 +1,15 @@
+Halo #NAME#,
+
+Permintaan Pengendalian Perubahan berikut telah mencapai tahap *Menunggu Penutupan (Waiting to Close)*.
+
+----------------------------------------
+*Judul Permintaan*  : #TITLE#  
+*Nomor Usulan*      : #REQUEST_NUMBER#
+----------------------------------------
+
+Mohon untuk melakukan verifikasi akhir dan memastikan seluruh tindakan yang diperlukan telah diselesaikan sebelum proses penutupan dilakukan.
+
+Apabila terdapat hal yang perlu diklarifikasi, silakan hubungi Administrator.
+
+Salam hormat,  
+PT. Samco Farma

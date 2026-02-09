@@ -1,0 +1,74 @@
+.kop {
+    font-family: "Times New Roman", Times, serif;
+    margin: 0.5cm 1cm;
+}
+
+.kop-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: none;
+}
+
+.kop-logo {
+    width: 15%;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+}
+
+.kop-logo-img {
+    width: 120px;
+}
+
+.kop-text {
+    width: 70%;
+    text-align: center;
+    padding: 0 0.5cm;
+    line-height: 1.3;
+    border: none;
+}
+
+.kop-title {
+    font-size: 25pt;
+    color: #d13c4a;
+    margin: 0;
+}
+
+.kop-subtitle {
+    font-size: 14pt;
+    color: #0070c0;
+    margin: 0;
+}
+
+.kop-address {
+    font-size: 10pt;
+    margin: 0.5px 0;
+}
+
+.kop-contact {
+    font-size: 10pt;
+    margin: 0.5px 0;
+}
+
+.kop-cert {
+    width: 15%;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+}
+
+.kop-cert-img {
+     width: 120px;
+}
+
+.kop-cert-code {
+    font-size: 9pt;
+    text-align: center;
+    margin-top: 4px;
+}
+
+.kop-border {
+    border-top: 4px double #000;
+    border-bottom: 2px solid #000;
+    margin-top: 10px;
+}

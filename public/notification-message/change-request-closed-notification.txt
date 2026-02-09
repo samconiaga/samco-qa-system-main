@@ -1,0 +1,14 @@
+Halo #NAME#
+
+Permintaan Pengendalian Perubahan Anda Telah Ditutup, Berikut Detailnya:
+-------------------------------
+Nomor Usulan : *#NUMBER#*
+Judul : *#TITLE#*
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+

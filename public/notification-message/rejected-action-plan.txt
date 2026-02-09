@@ -1,0 +1,16 @@
+Halo #NAME#
+
+
+Mohon Maaf, Usulan Perubahan Yang Anda Ajukan Di Tolak, Berikut Detailnya:
+-------------------------------
+Inisiator : *#INITIATOR#*
+Department : *#DEPARTMENT#*
+Judul : *#TITLE#*
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+

@@ -1,0 +1,18 @@
+Halo #NAME#,
+
+Kami ingin memberitahukan bahwa permintaan perpanjangan tenggat waktu untuk pengerjaan implementasi tindak lanjut anda telah ditolak. Berikut adalah detailnya:
+-------------------------------
+
+Nomor Usulan: *#REQUEST_NUMBER#*
+Judul Permintaan :  *#TITLE#*
+Kategori Dampak Perubahan : *#IMPACT_OF_CHANGE_CATEGORY#*
+Realisasi: *#REALIZATION#*
+
+
+-------------------------------
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+

@@ -1,0 +1,17 @@
+Halo #NAME#
+
+Ada Permintaan Keterlambatan Pengerjaan Implementasi Tindak Lanjut, Berikut Detailnya:
+-------------------------------
+Nomor Usulan: *#REQUEST_NUMBER#*
+Kategori Dampak Perubahan : *#IMPACT_OF_CHANGE_CATEGORY#*
+Judul : *#TITLE#*
+Inisiator : *#INITIATOR#*
+Department : *#DEPARTMENT#*
+PIC : *#PIC#*
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma

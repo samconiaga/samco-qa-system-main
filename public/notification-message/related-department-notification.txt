@@ -1,0 +1,13 @@
+Halo #NAME#,
+
+Usulan perubahan telah disetujui oleh Plant Manager. Mohon untuk melakukan tindak lanjut yang diperlukan sesuai dengan hasil persetujuan berikut:
+
+----------------------------------------
+*Judul Permintaan*   : #TITLE#  
+*Nomor Usulan*       : #REQUEST_NUMBER#
+----------------------------------------
+
+Jika ada pertanyaan atau kendala, silakan menghubungi department head terkait untuk klarifikasi lebih lanjut.
+
+Salam hormat,  
+PT. Samco Farma

@@ -1,0 +1,14 @@
+Halo #NAME#
+
+Permintaan Pengendalian Perubahan Telah Ditolak, Berikut Detail Pengajuan Anda:
+-------------------------------
+Judul : *#TITLE#*
+Inisiator : *#INITIATOR#*
+-------------------------------
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, silahkan hubungi admin.
+
+
+Salam,
+PT. Samco Farma
+
