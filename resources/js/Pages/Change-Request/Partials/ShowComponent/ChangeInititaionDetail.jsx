@@ -15,15 +15,15 @@ export default function ChangeInitiationDetail({ changeRequest }) {
         otherFiles.length
     );
     const followUpMap = useMemo(() => {
-        if (!changeRequest?.followUpImplementations) return new Map();
+        if (!changeRequest?.follow_up_implementations) return new Map();
 
         return new Map(
-            changeRequest.followUpImplementations.map(item => [
-                item.department_id,
-                item.evaluation_status
-            ])
+            changeRequest.follow_up_implementations.map((item) => [
+                String(item.department_id),
+                item.evaluation_status,
+            ]),
         );
-    }, [changeRequest?.followUpImplementations]);
+    }, [changeRequest?.follow_up_implementations]);
     const getRowClass = (status) => {
         if (status === 'Disagree') return 'table-danger';
         if (!status) return 'table-warning';
