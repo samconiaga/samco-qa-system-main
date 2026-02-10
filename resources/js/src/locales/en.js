@@ -309,6 +309,8 @@ const en = {
             "You will request additional time to complete this action.",
         save_as_draft: "Save as Draft",
         close_request: "Close Request",
+        close_request_description:
+            "By closing the request, you will complete this change request.",
         select_affected_products: "Select Affected Products",
         selected_products: "Selected Products",
         capa_types: "CAPA Types",
