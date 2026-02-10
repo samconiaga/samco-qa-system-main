@@ -63,9 +63,11 @@ class ImpactOfChangeCategorySeeder extends Seeder
             'SPP disetujui',
         ];
 
-        foreach ($categories as $category) {
+        foreach ($categories as $index => $category) {
             ImpactOfChangeCategory::updateOrCreate([
                 'name' => $category,
+            ], [
+                'number' => $index + 1,
             ]);
         }
     }

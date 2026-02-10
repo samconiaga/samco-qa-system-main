@@ -14,22 +14,26 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         $departments = [
-            'Finance & Accounting',
-            'PPIC & Warehouse',
-            'Sales',
-            'Production',
-            'Quality Control',
-            'Engineering',
-            'Marketing',
-            'HR & GA',
-            'Management Information System',
-            'Purchasing',
-            'Product Development',
-            'Quality Assurance',
+            ['name' => 'Finance & Accounting', 'short_name' => 'FA'],
+            ['name' => 'PPIC & Warehouse', 'short_name' => 'PI'],
+            ['name' => 'Sales', 'short_name' => 'SL'],
+            ['name' => 'Production', 'short_name' => 'PD'],
+            ['name' => 'Quality Control', 'short_name' => 'QC'],
+            ['name' => 'Engineering', 'short_name' => 'TK'],
+            ['name' => 'Marketing', 'short_name' => 'MK'],
+            ['name' => 'HR & GA', 'short_name' => 'HR'],
+            ['name' => 'Management Information System', 'short_name' => 'MS'],
+            ['name' => 'Purchasing', 'short_name' => 'PC'],
+            ['name' => 'Product Development', 'short_name' => 'RD'],
+            ['name' => 'Quality Assurance', 'short_name' => 'QA'],
+            ['name' => 'Plant', 'short_name' => 'PLT'],
         ];
 
         foreach ($departments as $department) {
-            Department::firstOrCreate(['name' => $department]);
+            Department::updateOrCreate(
+                ['name' => $department['name']],
+                ['short_name' => $department['short_name']]
+            );
         }
     }
 }
