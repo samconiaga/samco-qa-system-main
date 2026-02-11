@@ -222,13 +222,12 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
         return DB::transaction(function () use ($request, $changeRequest) {
 
             $data = $request->all();
-
             // 1️⃣ Simpan Impact Of Change Assessment
             ImpactOfChangeAssesment::updateOrCreate(
                 ['change_request_id' => $data['change_request_id']],
                 [
                     'facility_affected' => $data['facility_affected'] ?? null,
-                    'product_affected'  => $data['product_affected'] ?? null,
+                    // 'product_affected'  => $data['product_affected'] ?? null,
                     'halal_status'      => $data['halal_status'] ?? null,
                 ]
             );
@@ -251,6 +250,7 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
                 ['decision', '=', 'Pending'],
             ])->update([
                 'decision' => 'Approved',
+                'approved_at' => now(),
             ]);
 
             // 4️⃣ Ambil semua department terkait
@@ -648,7 +648,7 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
     {
         return DB::transaction(function () use ($changeRequest, $request) {
             $user = User::find(Auth::id());
-            $initiator = $changeRequest->employee?->user;
+            $initiator = $changeRequest?->employee?->user;
             $permissionToField = [
                 'Approve QA Manager' => 'qa_manager_sign',
                 'Approve QA SPV'     => 'qa_spv_sign',
@@ -661,6 +661,19 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
                 ['change_request_id' => $changeRequest->id],
                 $fieldsToUpdate
             );
+
+            // Update approval record with approved_at timestamp
+            foreach ($permissionToField as $permission => $field) {
+                if ($user->hasPermissionTo($permission)) {
+                    $changeRequest->approvals()
+                        ->where('stage', $permission)
+                        ->where('decision', 'Pending')
+                        ->update([
+                            'decision' => 'Approved',
+                            'approved_at' => now(),
+                        ]);
+                }
+            }
 
             if ($request->has('conclusion')) {
                 $changeRequest->update(['conclusion' => $request->conclusion]);

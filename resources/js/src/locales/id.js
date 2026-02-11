@@ -114,7 +114,7 @@ const id = {
         impact_risk_assesment: "Kajian Terhadap Dampak Risiko",
         action_plan: "Rencana Tindakan",
         title_of_change: "Judul Perubahan",
-        initiator_name: "Nama Inisiator",
+        initiator_name: "Inisiator",
         related_change: "Perubahan Terkait",
         type_of_change: "Tipe Perubahan",
         continual_improvement_or_inovation: "Perbaikan Berkelanjutan / Inovasi",

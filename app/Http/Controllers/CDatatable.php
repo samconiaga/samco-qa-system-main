@@ -177,7 +177,7 @@ class CDatatable extends Controller
         $search = request()->get('search');
 
         $data = ChangeRequest::query()
-            ->select('id','title', 'request_number', 'initiator_name', 'employee_id', 'department_id', 'overall_status','requested_date', 'created_at')
+            ->select('id', 'title', 'request_number', 'initiator_name', 'employee_id', 'department_id', 'overall_status', 'requested_date', 'created_at')
             ->byEmployee()
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
@@ -190,7 +190,7 @@ class CDatatable extends Controller
             })
             ->with([
                 'employee.user:id,name,email',
-                'department:id,name',
+                'department:id,name,short_name',
                 'lastApproval:id,change_request_id,comments',
                 'approvals:decision,approver_id,change_request_id',
             ])
@@ -236,7 +236,7 @@ class CDatatable extends Controller
     {
         $perPage = $request->get('per_page', 10);
         $data = $changeRequest->actionPlans()
-            ->with(['department', 'impactCategory', 'pic','completionProofFiles'])
+            ->with(['department', 'impactCategory', 'pic', 'completionProofFiles'])
             ->paginate($perPage);
 
         return response()->json([

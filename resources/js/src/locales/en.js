@@ -108,7 +108,7 @@ const en = {
         impact_risk_assesment: "Impact Risk Assessment",
         action_plan: "Action Plan",
         title_of_change: "Title Of Change",
-        initiator_name: "Initiator Name",
+        initiator_name: "Initiator",
         related_change: "Related Change",
         type_of_change: "Type Of Changes",
         continual_improvement_or_inovation:
