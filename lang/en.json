@@ -227,7 +227,9 @@
     "Yes": "Yes",
     "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
     "Yes After BPOM Notification": "Yes, it can be implemented after submitting notification to BPOM.",
-    "Yes, BPOM Notification Required":"Yes, Requires Notification Approval From BPOM",
+    "Yes, BPOM Notification Required": "Yes, Requires Notification Approval From BPOM",
     "Yes BPJPH Required": "Yes, Changes Require Prior BPJPH Approval",
-    "Yes No BPJH": "Yes, but changes do not require BPJPH approval"
+    "Yes No BPJH": "Yes, but changes do not require BPJPH approval",
+    "Realization": "Realization",
+    "impact_of_change": "Impact of Change"
 }

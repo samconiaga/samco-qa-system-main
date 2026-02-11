@@ -477,12 +477,14 @@ class CChangeRequest extends Controller
             'impactOfChangeAssesment',
             'closing',
             'approvals',
-            'actionPlans' => fn($q) => $q->with(['department', 'impactCategory']),
+            'actionPlans' => fn($q) => $q->with(['department', 'impactCategory', 'pic.user']),
         ])->append([
             'current_status_file_urls',
             'proposed_change_file_urls',
             'supporting_attachment_urls',
         ]);
+
+
 
         $tmpDir = storage_path('app/tmp');
         if (!is_dir($tmpDir)) mkdir($tmpDir, 0755, true);
@@ -515,15 +517,15 @@ class CChangeRequest extends Controller
                 if ($orientation === 'landscape') {
                     $pdf->AddPage('L');
                     $pdf->useTemplate($kopLandscapeTpl, 0, 0, 297);
-                    $pdf->useTemplate($tpl, 0, 20,297);
+                    $pdf->useTemplate($tpl, 0, 20, 297);
                 } elseif ($orientation === 'portrait') {
                     $pdf->AddPage('P');
                     $pdf->useTemplate($kopPortraitTpl, 0, 0, 210);
-                    $pdf->useTemplate($tpl, 0, 20,210);
+                    $pdf->useTemplate($tpl, 0, 20, 210);
                 } else {
                     $pdf->AddPage('P');
                     $pdf->useTemplate($kopPortraitTpl, 0, 0, 210);
-                    $pdf->useTemplate($tpl, 0, 20,210);
+                    $pdf->useTemplate($tpl, 0, 20, 210);
                 }
             }
 
@@ -532,6 +534,20 @@ class CChangeRequest extends Controller
 
         $render('print.change-request.change-initiation', 'portrait');
         $render('print.change-request.risk-assessment', 'landscape');
+
+        // Group action plans by impact of change category
+        $groupedActionPlans = $changeRequest->actionPlans
+            ->sortBy(function ($ap) {
+                return $ap->impactCategory?->impact_of_change_category ?? '';
+            })
+            ->groupBy(function ($ap) {
+                return $ap->impactCategory?->impact_of_change_category ?? 'Uncategorized';
+            });
+
+        // Pass groupedActionPlans to the view by encoding it into the changeRequest object or a separate variable if the view supports it.
+        // Since the render function only takes compact('changeRequest'), we can attach it to the changeRequest object as a temporary property.
+        $changeRequest->groupedActionPlans = $groupedActionPlans;
+
         $render('print.change-request.other', 'potrait');
 
         foreach (

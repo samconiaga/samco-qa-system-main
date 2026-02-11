@@ -1,5 +1,5 @@
 @php
-    $isChecked = fn($cond) => $cond ? 'checked' : '';
+$isChecked = fn($cond) => $cond ? 'checked' : '';
 @endphp
 
 <div style="margin-top: 0.5cm">
@@ -37,7 +37,7 @@
             <tbody>
                 <tr>
                     <td>1.</td>
-                    <td></td>
+                    <td>{{ $changeRequest->scopeOfChange->pluck('name')->join(', ') ?? '-' }}</td>
                     <td>{!! $changeRequest->impactRiskAssesment->impact_of_risk ?? '-' !!}</td>
                     <td>{!! $changeRequest->impactRiskAssesment->severity ?? '-' !!}</td>
                     <td>{!! $changeRequest->impactRiskAssesment->cause_of_risk ?? '-' !!}</td>

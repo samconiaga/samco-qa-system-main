@@ -14,31 +14,34 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th width="30%">{{ __('Action') }}</th>
+                                <th width="30%">{{ __('impact_of_change') }}</th>
                                 <th>{{ __('PIC') }}</th>
                                 <th>{{ __('Deadline') }}</th>
-                                <th>{{ __('Initials And Date') }}</th>
+                                <th>{{ __('Realization') }}</th>
                                 <th>{{ __('Status') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($changeRequest?->actionPlans as $ap)
-                                <tr>
-                                    <td style="text-align: center;">{{ $loop->iteration }}</td>
-                                    <td>{{ $ap->realization }}</td>
-                                    <td>{{ $ap?->pic?->name }}</td>
-                                    <td style="text-align: center;">
-                                        {{ $ap->deadline }}
-                                    </td>
-                                    <td>
-                                        @if ($ap->status == 'Close')
-                                            {{ $ap->updated_at }}
-                                        @endif
-                                    </td>
-                                    <td style="text-align: center;">
-                                        {{ $ap->status }}
-                                    </td>
-                                </tr>
+                            @foreach ($changeRequest->groupedActionPlans as $category => $plans)
+                            @php $groupIndex = $loop->iteration; @endphp
+                            @foreach ($plans as $ap)
+                            <tr>
+                                @if(isset($changeRequest->groupedActionPlans) && $changeRequest->groupedActionPlans->count() > 1)
+                                <td style="text-align: center;">{{ $groupIndex }}.{{ $loop->iteration }}</td>
+                                @else
+                                <td style="text-align: center;">{{ $loop->iteration }}</td>
+                                @endif
+                                <td>{!! $ap->impact_of_change_description !!}</td>
+                                <td>{{ $ap?->department?->short_name ?? $ap?->department?->name }}</td>
+                                <td style="text-align: center;">
+                                    {{ $ap->deadline }}
+                                </td>
+                                <td>{{ $ap->realization }}</td>
+                                <td style="text-align: center;">
+                                    {{ $ap->status }}
+                                </td>
+                            </tr>
+                            @endforeach
                             @endforeach
                         </tbody>
                     </table>
