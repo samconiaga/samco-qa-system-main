@@ -41,7 +41,7 @@ class ApproveOverdueRequest extends FormRequest
         foreach (array_keys($this->fill) as $key) {
             $dataValidate[$key] = ($this->fill[$key] == 1) ? 'required' : 'nullable';
             switch ($key) {
-                case 'timeline':
+                case 'deadline':
                     $dataValidate[$key] = 'required|date';
                     break;
             }

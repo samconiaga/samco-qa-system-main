@@ -15,10 +15,21 @@ import RelatedDepartmentForm from "../Change-Request/Partials/FormComponent/Rela
 import DeleteButton from "../../src/components/ui/Datatables/DeleteButton";
 import EditButton from "../../src/components/ui/Datatables/EditButton";
 import { Inertia } from "@inertiajs/inertia";
-import MultipleFileUpload from './../../src/components/ui/MultipleFileUpload';
+import MultipleFileUpload from "./../../src/components/ui/MultipleFileUpload";
 import ErrorInput from "../../src/components/ui/ErrorInput";
 
-export default function FollowUpImplementationTable({ auth, permissions, changeRequestId, impactOfChangeCategories, data, setData, errors, clearErrors, reset, handleSave }) {
+export default function FollowUpImplementationTable({
+    auth,
+    permissions,
+    changeRequestId,
+    impactOfChangeCategories,
+    data,
+    setData,
+    errors,
+    clearErrors,
+    reset,
+    handleSave,
+}) {
     const { t } = useTranslation();
     // === STATE ===
     const [tableData, setTableData] = useState([]);
@@ -34,20 +45,34 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
     const [modalTitle, setModalTitle] = useState("");
 
     // === FORM ===
-    const { data: actionPlanData, setData: setActionPlanData, post: actionPlanPost, delete: destroy, processing, reset: actionPlanReset, errors: actionPlanErrors, transform } = useForm({
+    const {
+        data: actionPlanData,
+        setData: setActionPlanData,
+        post: actionPlanPost,
+        delete: destroy,
+        processing,
+        reset: actionPlanReset,
+        errors: actionPlanErrors,
+        transform,
+    } = useForm({
         id: null,
         deadline: null,
         completion_proof_file: [],
-        realization: ""
+        realization: "",
     });
 
     // === LOAD DATA ===
     const loadTableData = () => {
         setIsLoading(true);
         axios
-            .get(route("datatable.follow-up-implementations", { changeRequest: changeRequestId }), {
-                params: { page: currentPage, per_page: rowsPerPage },
-            })
+            .get(
+                route("datatable.follow-up-implementations", {
+                    changeRequest: changeRequestId,
+                }),
+                {
+                    params: { page: currentPage, per_page: rowsPerPage },
+                },
+            )
             .then((res) => {
                 setTableData(res.data.data);
                 setTotalRows(res.data.total);
@@ -63,7 +88,10 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
     // =========================================================
     // 🧩 UNIVERSAL SUBMIT HANDLER
     // =========================================================
-    const submitHandler = (id, { method = "post", routeName, confirmMsg, payload }) => {
+    const submitHandler = (
+        id,
+        { method = "post", routeName, confirmMsg, payload },
+    ) => {
         transform((data) => ({
             ...data,
             ...payload,
@@ -77,8 +105,12 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
             action(route(routeName, id), {
                 preserveScroll: true,
                 onSuccess: (page) => {
-                    const message = page.props?.flash?.success ?? page.props?.flash?.error;
-                    message && (page.props?.flash?.success ? notifySuccess : notifyError)(message, "bottom-center");
+                    const message =
+                        page.props?.flash?.success ?? page.props?.flash?.error;
+                    message &&
+                        (page.props?.flash?.success
+                            ? notifySuccess
+                            : notifyError)(message, "bottom-center");
                     loadTableData();
                     handleClose();
                 },
@@ -88,7 +120,6 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
     };
 
     // =========================================================
-
 
     // === INDIVIDUAL ACTION WRAPPERS ===
     const handleRequestOverdue = (id) => {
@@ -106,7 +137,9 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
             method: "post",
             routeName: "change-requests.upload.proof-of-work",
             confirmMsg: t("confirm_upload"),
-            payload: { completion_proof_file: actionPlanData.completion_proof_file },
+            payload: {
+                completion_proof_file: actionPlanData.completion_proof_file,
+            },
         });
     };
 
@@ -120,7 +153,10 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
     };
 
     const handleReject = (id, status) => {
-        const route = status == "Submitted" ? "change-requests.action-plan.reject" : "change-requests.overdue-request.reject";
+        const route =
+            status == "Submitted"
+                ? "change-requests.action-plan.reject"
+                : "change-requests.overdue-request.reject";
         submitHandler(id, {
             method: "post",
             routeName: route,
@@ -140,23 +176,34 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
         handleSave(e);
     };
     const handleDelete = (id) => {
-        confirmAlert(t('are_you_sure'), t('delete_description'), 'warning', () => {
-            destroy(route('change-requests.follow-up-implementations.destroy', id), {
-                onStart: () => setIsLoading(true),
-                onSuccess: (page) => {
-                    setIsLoading(false);
-                    const error = page.props?.flash?.error;
-                    const success = page.props?.flash?.success;
-                    if (error) {
-                        notifyError(error, 'bottom-center');
-                    } else {
-                        notifySuccess(success, 'bottom-center');
-                        loadTableData();
-                    }
-                },
-            });
-        });
-    }
+        confirmAlert(
+            t("are_you_sure"),
+            t("delete_description"),
+            "warning",
+            () => {
+                destroy(
+                    route(
+                        "change-requests.follow-up-implementations.destroy",
+                        id,
+                    ),
+                    {
+                        onStart: () => setIsLoading(true),
+                        onSuccess: (page) => {
+                            setIsLoading(false);
+                            const error = page.props?.flash?.error;
+                            const success = page.props?.flash?.success;
+                            if (error) {
+                                notifyError(error, "bottom-center");
+                            } else {
+                                notifySuccess(success, "bottom-center");
+                                loadTableData();
+                            }
+                        },
+                    },
+                );
+            },
+        );
+    };
 
     const handleSavePendingActionPlan = () => {
         submitHandler(
@@ -167,11 +214,11 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                 confirmMsg: t("submit_action_plan"),
                 payload: {
                     change_request_id: data?.change_request_id,
-                    department_id: auth?.user?.employee?.department_id
+                    department_id: auth?.user?.employee?.department_id,
                 },
-            }
-        )
-    }
+            },
+        );
+    };
     // === MODAL HANDLING ===
     const handleShow = (type, id, title) => {
         setModalType(type);
@@ -190,20 +237,22 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
     const handleFollowUpImplementationModalEdit = (type, row, title) => {
         setModalType(type);
         setModalTitle(title);
-        const impactValue = row?.impact_category?.impact_of_change_category || "";
-        const match = impactOfChangeCategories.find(i => i.name === impactValue);
-        setData(prev => ({
+        const impactValue =
+            row?.impact_category?.impact_of_change_category || "";
+        const match = impactOfChangeCategories.find(
+            (i) => i.name === impactValue,
+        );
+        setData((prev) => ({
             ...prev,
             old_impact_category: impactValue,
             impact_of_change_category: match ? impactValue : null,
             custom_category: match ? "" : impactValue,
             deadline: row?.deadline || "",
             impact_of_change_description: row?.impact_of_change_description,
-            action_plan_id: row?.id
+            action_plan_id: row?.id,
         }));
         setShow(true);
     };
-
 
     // === TABLE COLUMNS ===
     const getBadgeClass = (status) => {
@@ -373,7 +422,7 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
     const hasPendingRows = tableData.some(
         (row) =>
             row.department_id === auth?.user?.employee?.department_id &&
-            !row.status // status null atau undefined
+            !row.status, // status null atau undefined
     );
     return (
         <>
@@ -408,21 +457,38 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                 className="table-responsive table-wrapper"
                 style={{
                     overflowX: "auto",
-                    overflowY: "hidden"
+                    overflowY: "hidden",
                 }}
             >
-                <table className="table table-freeze table-bordered " style={{ minWidth: "1500px" }}>
-
-                    <thead className="table-light"
-                        style={{ position: "sticky", top: 0, zIndex: 10 }}>
+                <table
+                    className="table table-freeze table-bordered "
+                    style={{ minWidth: "1500px" }}
+                >
+                    <thead
+                        className="table-light"
+                        style={{ position: "sticky", top: 0, zIndex: 10 }}
+                    >
                         <tr>
                             <th style={{ width: "70px" }}>No</th>
-                            <th style={{ width: "200px" }}>{t("impact_of_change_category")}</th>
-                            <th style={{ width: "300px" }}>{t("impact_of_change")}</th>
-                            <th style={{ width: "200px" }} className="text-center">{t("PIC")}</th>
+                            <th style={{ width: "200px" }}>
+                                {t("impact_of_change_category")}
+                            </th>
+                            <th style={{ width: "300px" }}>
+                                {t("impact_of_change")}
+                            </th>
+                            <th
+                                style={{ width: "200px" }}
+                                className="text-center"
+                            >
+                                {t("PIC")}
+                            </th>
                             <th style={{ width: "150px" }}>{t("deadline")}</th>
-                            <th style={{ width: "200px" }}>{t("proof_of_work")}</th>
-                            <th style={{ width: "200px" }}>{t("realization")}</th>
+                            <th style={{ width: "200px" }}>
+                                {t("proof_of_work")}
+                            </th>
+                            <th style={{ width: "200px" }}>
+                                {t("realization")}
+                            </th>
                             <th style={{ width: "150px" }}>{t("status")}</th>
                             <th style={{ width: "200px" }}>{t("action")}</th>
                         </tr>
@@ -444,28 +510,49 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                         ) : (
                             tableData.map((row, i) => (
                                 <tr key={row.id}>
-                                    <td>{(currentPage - 1) * rowsPerPage + i + 1}</td>
-                                    <td>{row?.impact_category?.impact_of_change_category}</td>
-                                    <td>{stripHtml(row?.impact_of_change_description)}</td>
-                                    <td className="text-center">{row?.department?.name}</td>
+                                    <td>
+                                        {(currentPage - 1) * rowsPerPage +
+                                            i +
+                                            1}
+                                    </td>
+                                    <td>
+                                        {
+                                            row?.impact_category
+                                                ?.impact_of_change_category
+                                        }
+                                    </td>
+                                    <td>
+                                        {stripHtml(
+                                            row?.impact_of_change_description,
+                                        )}
+                                    </td>
+                                    <td className="text-center">
+                                        {row?.department?.name}
+                                    </td>
                                     <td>{toDateString(row.deadline, false)}</td>
                                     <td>
-                                        {row?.completion_proof_files?.length ?
-                                            row.completion_proof_files.map((file, idx) => (
-                                                <a key={idx}
-                                                    href={`/storage/${file.file_path}`}
-                                                    target="_blank"
-                                                    className="text-primary">
-                                                    {t("view_file")} {idx + 1}
-                                                </a>
-                                            ))
-                                            : "-"
-                                        }
+                                        {row?.completion_proof_files?.length
+                                            ? row.completion_proof_files.map(
+                                                  (file, idx) => (
+                                                      <a
+                                                          key={idx}
+                                                          href={`/storage/${file.file_path}`}
+                                                          target="_blank"
+                                                          className="text-primary"
+                                                      >
+                                                          {t("view_file")}{" "}
+                                                          {idx + 1}
+                                                      </a>
+                                                  ),
+                                              )
+                                            : "-"}
                                     </td>
                                     <td>{row.realization || "-"}</td>
 
                                     <td>
-                                        <span className={`badge ${getBadgeClass(row.status)}`}>
+                                        <span
+                                            className={`badge ${getBadgeClass(row.status)}`}
+                                        >
                                             {t(row.status)}
                                         </span>
                                     </td>
@@ -473,29 +560,66 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                                     <td>
                                         {(() => {
                                             const isPIC =
-                                                auth?.user?.employee?.department_id === row.department_id &&
-                                                permissions.includes("PIC Action Plan");
+                                                auth?.user?.employee
+                                                    ?.department_id ===
+                                                    row.department_id &&
+                                                permissions.includes(
+                                                    "PIC Action Plan",
+                                                );
 
                                             // Jika status Open / Overdue dan PIC
-                                            if (["Open", "Overdue"].includes(row.status) && isPIC) {
+                                            if (
+                                                ["Open", "Overdue"].includes(
+                                                    row.status,
+                                                ) &&
+                                                isPIC
+                                            ) {
                                                 return (
                                                     <>
                                                         <Button
                                                             className="btn btn-sm btn-warning me-2"
-                                                            onClick={() => handleRequestOverdue(row.id)}
-                                                            isLoading={loadingButtonId === row.id}
+                                                            onClick={() =>
+                                                                handleRequestOverdue(
+                                                                    row.id,
+                                                                )
+                                                            }
+                                                            isLoading={
+                                                                loadingButtonId ===
+                                                                row.id
+                                                            }
                                                             loadingType={2}
                                                         >
-                                                            <Icon icon="mdi:history" className="me-2" width="18" height="18" />
+                                                            <Icon
+                                                                icon="mdi:history"
+                                                                className="me-2"
+                                                                width="18"
+                                                                height="18"
+                                                            />
                                                         </Button>
 
                                                         <Button
-                                                            onClick={() => handleShow("upload", row.id, t("upload_proof_of_work"))}
+                                                            onClick={() =>
+                                                                handleShow(
+                                                                    "upload",
+                                                                    row.id,
+                                                                    t(
+                                                                        "upload_proof_of_work",
+                                                                    ),
+                                                                )
+                                                            }
                                                             className="btn btn-info btn-sm"
-                                                            isLoading={loadingButtonId === row.id}
+                                                            isLoading={
+                                                                loadingButtonId ===
+                                                                row.id
+                                                            }
                                                             loadingType={2}
                                                         >
-                                                            <Icon icon="mdi:upload" className="me-2" width="18" height="18" />
+                                                            <Icon
+                                                                icon="mdi:upload"
+                                                                className="me-2"
+                                                                width="18"
+                                                                height="18"
+                                                            />
                                                         </Button>
                                                     </>
                                                 );
@@ -511,16 +635,26 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                                                                 handleFollowUpImplementationModalEdit(
                                                                     "edit",
                                                                     row,
-                                                                    t("edit_follow_up_implementation")
+                                                                    t(
+                                                                        "edit_follow_up_implementation",
+                                                                    ),
                                                                 )
                                                             }
-                                                            isLoading={isLoading}
+                                                            isLoading={
+                                                                isLoading
+                                                            }
                                                         />
 
                                                         <DeleteButton
                                                             key="delete"
-                                                            onClick={() => handleDelete(row.id)}
-                                                            isLoading={isLoading}
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    row.id,
+                                                                )
+                                                            }
+                                                            isLoading={
+                                                                isLoading
+                                                            }
                                                         />
                                                     </>
                                                 );
@@ -528,33 +662,70 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
 
                                             // Jika Request Overdue / Submitted dan QA SPV bisa approve
                                             if (
-                                                ["Request Overdue", "Submitted"].includes(row.status) &&
-                                                permissions.includes("Approve QA SPV")
+                                                [
+                                                    "Request Overdue",
+                                                    "Submitted",
+                                                ].includes(row.status) &&
+                                                permissions.includes(
+                                                    "Approve QA SPV",
+                                                )
                                             ) {
                                                 return (
                                                     <>
                                                         <Button
                                                             className="btn btn-success btn-sm me-2"
                                                             onClick={() => {
-                                                                if (row.status === "Request Overdue") {
-                                                                    handleShow("approve overdue", row.id, t("overdue_submission"));
+                                                                if (
+                                                                    row.status ===
+                                                                    "Request Overdue"
+                                                                ) {
+                                                                    handleShow(
+                                                                        "approve overdue",
+                                                                        row.id,
+                                                                        t(
+                                                                            "overdue_submission",
+                                                                        ),
+                                                                    );
                                                                 } else {
-                                                                    handleApproveActionPlan(row.id);
+                                                                    handleApproveActionPlan(
+                                                                        row.id,
+                                                                    );
                                                                 }
                                                             }}
-                                                            isLoading={loadingButtonId === row.id}
+                                                            isLoading={
+                                                                loadingButtonId ===
+                                                                row.id
+                                                            }
                                                             loadingType={2}
                                                         >
-                                                            <Icon icon="mdi:check" className="me-2" width="18" height="18" />
+                                                            <Icon
+                                                                icon="mdi:check"
+                                                                className="me-2"
+                                                                width="18"
+                                                                height="18"
+                                                            />
                                                         </Button>
 
                                                         <Button
                                                             className="btn btn-danger btn-sm"
-                                                            onClick={() => handleReject(row.id, row.status)}
-                                                            isLoading={loadingButtonId === row.id}
+                                                            onClick={() =>
+                                                                handleReject(
+                                                                    row.id,
+                                                                    row.status,
+                                                                )
+                                                            }
+                                                            isLoading={
+                                                                loadingButtonId ===
+                                                                row.id
+                                                            }
                                                             loadingType={2}
                                                         >
-                                                            <Icon icon="mdi:alpha-x-circle-outline" className="me-2" width="18" height="18" />
+                                                            <Icon
+                                                                icon="mdi:alpha-x-circle-outline"
+                                                                className="me-2"
+                                                                width="18"
+                                                                height="18"
+                                                            />
                                                         </Button>
                                                     </>
                                                 );
@@ -567,7 +738,6 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                             ))
                         )}
                     </tbody>
-
                 </table>
             </div>
 
@@ -581,10 +751,15 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                         className="form-select form-select-sm"
                         style={{ width: "80px" }}
                         value={rowsPerPage}
-                        onChange={(e) => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                        onChange={(e) => {
+                            setRowsPerPage(Number(e.target.value));
+                            setCurrentPage(1);
+                        }}
                     >
-                        {[10, 20, 30, 50].map(n => (
-                            <option key={n} value={n}>{n}</option>
+                        {[10, 20, 30, 50].map((n) => (
+                            <option key={n} value={n}>
+                                {n}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -594,19 +769,21 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                     <Button
                         className="btn btn-sm btn-secondary"
                         disabled={currentPage === 1}
-                        onClick={() => setCurrentPage(prev => prev - 1)}
+                        onClick={() => setCurrentPage((prev) => prev - 1)}
                     >
-                        {t('previous')}
+                        {t("previous")}
                     </Button>
 
-                    <span>{currentPage} / {totalPages}</span>
+                    <span>
+                        {currentPage} / {totalPages}
+                    </span>
 
                     <Button
                         className="btn btn-sm btn-danger"
                         disabled={currentPage === totalPages}
-                        onClick={() => setCurrentPage(prev => prev + 1)}
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
                     >
-                        {t('next')}
+                        {t("next")}
                     </Button>
                 </div>
 
@@ -618,13 +795,17 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                             disabled={processing}
                             onClick={handleSavePendingActionPlan}
                         >
-                            <Icon icon="mdi:send" className="me-2" width="20" height="20" /> {t('submit')}
+                            <Icon
+                                icon="mdi:send"
+                                className="me-2"
+                                width="20"
+                                height="20"
+                            />{" "}
+                            {t("submit")}
                         </Button>
                     )}
                 </div>
             </div>
-
-
 
             {/* === MODAL === */}
             <Modal show={show} onHide={handleClose} size="lg">
@@ -638,53 +819,75 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                         if (modalType === "upload") {
                             handleUploadProof(e);
                         } else if (modalType == "edit") {
-                            handleEdit(e)
+                            handleEdit(e);
                         } else {
                             handleApproveOverdue(actionPlanData.id);
                         }
                     }}
                 >
-
                     <Modal.Body>
                         {modalType === "upload" && (
                             <>
                                 <div className="mb-3">
-                                    <label className="form-label">{t("realization")}</label>
+                                    <label className="form-label">
+                                        {t("realization")}
+                                    </label>
                                     <TextInput
                                         value={actionPlanData.realization || ""}
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            setActionPlanData("realization", value);
+                                            setActionPlanData(
+                                                "realization",
+                                                value,
+                                            );
                                         }}
                                         placeholder={t("enter_attribute", {
                                             attribute: t("realization"),
                                         })}
-                                        errorMessage={actionPlanErrors?.realization}
+                                        errorMessage={
+                                            actionPlanErrors?.realization
+                                        }
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">{t("completion_proof_file")}</label>
+                                    <label className="form-label">
+                                        {t("completion_proof_file")}
+                                    </label>
                                     <MultipleFileUpload
                                         data={actionPlanData}
                                         setData={setActionPlanData}
                                         fieldName="completion_proof_file"
                                         maxFiles={10}
-                                        allowedFileTypes={['application/pdf']}
+                                        allowedFileTypes={["application/pdf"]}
                                     />
-                                    {actionPlanErrors.completion_proof_file && <ErrorInput message={actionPlanErrors.completion_proof_file} className="text-danger" />}
+                                    {actionPlanErrors.completion_proof_file && (
+                                        <ErrorInput
+                                            message={
+                                                actionPlanErrors.completion_proof_file
+                                            }
+                                            className="text-danger"
+                                        />
+                                    )}
                                 </div>
                             </>
                         )}
 
                         {modalType === "approve overdue" && (
                             <div className="mb-3">
-                                <label className="form-label">{t("deadline")}</label>
+                                <label className="form-label">
+                                    {t("deadline")}
+                                </label>
                                 <TextInput
                                     type="date"
                                     className="form-control"
                                     autoComplete="off"
-                                    value={data.deadline || ""}
-                                    onChange={(e) => setActionPlanData("deadline", e.target.value)}
+                                    value={actionPlanData.deadline || ""}
+                                    onChange={(e) =>
+                                        setActionPlanData(
+                                            "deadline",
+                                            e.target.value,
+                                        )
+                                    }
                                     errorMessage={actionPlanErrors.deadline}
                                 />
                             </div>
@@ -692,7 +895,9 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
 
                         {modalType === "edit" && (
                             <RelatedDepartmentForm
-                                impactOfChangeCategories={impactOfChangeCategories}
+                                impactOfChangeCategories={
+                                    impactOfChangeCategories
+                                }
                                 data={data}
                                 setData={setData}
                                 errors={errors}
@@ -702,10 +907,18 @@ export default function FollowUpImplementationTable({ auth, permissions, changeR
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button type="button" className="btn btn-secondary" onClick={handleClose}>
+                        <Button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={handleClose}
+                        >
                             {t("cancel")}
                         </Button>
-                        <Button type="submit" className="btn btn-danger" isLoading={processing}>
+                        <Button
+                            type="submit"
+                            className="btn btn-danger"
+                            isLoading={processing}
+                        >
                             {t("save")}
                         </Button>
                     </Modal.Footer>

@@ -375,7 +375,7 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
         return DB::transaction(function () use ($request) {
             $data = $request->validated();
             $actionPlan = ActionPlan::find($data['id']);
-            $actionPlan->status = 'Overdue';
+            $actionPlan->status = 'Open';
             $actionPlan->deadline = $data['deadline'] ?? '';
             $actionPlan->save();
             // dd($data['deadline']);
