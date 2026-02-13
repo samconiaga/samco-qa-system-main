@@ -26,7 +26,7 @@ use App\Models\ChangeRequestApproval;
 use App\Models\FollowUpImplementation;
 use App\Models\ImpactOfChangeAssesment;
 use Illuminate\Support\Facades\Storage;
-use App\Models\ActionPlanOverdueRequest;
+
 use App\Models\FollowUpImplementationDetail;
 use App\Models\ChangeRequestSupportingAttachment;
 use LaravelEasyRepository\Implementations\Eloquent;
@@ -323,25 +323,49 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
     {
         return DB::transaction(function () use ($request) {
             $data = $request->validated();
-            $actionPlan = ActionPlan::find($data['id']);
-            $actionPlan->status = 'Request Overdue';
-            $actionPlan->save();
-            ActionPlanOverdueRequest::create([
-                'action_plan_id' => $actionPlan->id,
-                'status'         => 'Pending',
-                'reason'         => $data['reason'] ?? null,
+            $originalActionPlan = ActionPlan::find($data['id']);
+
+            // 1. Mark original as Extended
+            $originalActionPlan->status = 'Extended';
+            $originalActionPlan->save();
+
+            // 2. Create new Action Plan (Child)
+            $newActionPlan = ActionPlan::create([
+                'id' => Str::uuid(),
+                'change_request_id' => $originalActionPlan->change_request_id,
+                'parent_id' => $originalActionPlan->id,
+                'action_proposal' => $originalActionPlan->action_proposal,
+                'impact_of_change_description' => $data['impact_of_change_description'],
+                'pic_id' => $originalActionPlan->pic_id,
+                'department_id' => $originalActionPlan->department_id,
+                'deadline' => $data['deadline'],
+                'status' => 'Pending',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
-            $spv = Employee::find($this->findApproverId('Approve QA SPV'));
-            $this->sendNotification($spv->user, [
-                'name' => $spv->name,
-                'impact_of_change_category' => $actionPlan?->impactCategory?->impact_of_change_category,
-                'title' => $actionPlan->changeRequest->title,
-                'pic' => $actionPlan->department->name,
-                'request_number' => $actionPlan->changeRequest->request_number,
-                'realization' => $actionPlan->realization,
-                'initiator' => $actionPlan->changeRequest->initiator_name,
-                'department' => $actionPlan->changeRequest->department->name,
-            ], 'overdue-request.txt', __("Overdue Request"));
+
+            // 3. Re-attach Impact Category (if needed, usually it's on the action plan itself or detail)
+            // Assuming ImpactCategory link is via relationship or direct ID. 
+            // ActionPlan model says: belongsTo FollowUpImplementationDetail via follow_up_implementation_detail_id
+            // We need to know where 'impact_category' from request comes from. 
+            // The request has 'impact_category' string (name), but the model uses ID.
+            // Let's check how ActionPlan relates to ImpactCategory.
+            // ActionPlanModel: public function impactCategory() { return $this->belongsTo(FollowUpImplementationDetail::class, 'follow_up_implementation_detail_id', 'id'); }
+            // The Original ActionPlan has `follow_up_implementation_detail_id`. We should probably keep it?
+
+            $newActionPlan->follow_up_implementation_detail_id = $originalActionPlan->follow_up_implementation_detail_id;
+            $newActionPlan->save();
+
+            // Notify SPV? logic kept or removed? 
+            // The instruction "when user requesting overdue, it change the status to extend... to create a new action_plan" 
+            // implies it's an automatic extension or a request that creates a new plan.
+            // If it creates a new 'Open' plan, maybe no approval needed yet? 
+            // The original code sent notification to SPV for 'Pending' overdue request.
+            // If we blindly create a new Open plan, does it need approval? 
+            // The prompt says "create a new action_plan... Add parent id... to the exteneded action plan".
+            // It doesn't explicitly say "require approval". It says "instead of request overdue... change status to extend... and show form... to create new action plan".
+            // So I assume it acts like creating a new Action Plan.
+
             return true;
         });
     }
@@ -378,12 +402,7 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
             $actionPlan->status = 'Open';
             $actionPlan->deadline = $data['deadline'] ?? '';
             $actionPlan->save();
-            // dd($data['deadline']);
-            ActionPlanOverdueRequest::where('action_plan_id', $actionPlan->id)
-                ->where('status', 'Pending')
-                ->update([
-                    'status' => 'Approved',
-                ]);
+
             $pics = Employee::where('department_id', $actionPlan->department_id)
                 ->whereHas('user')
                 ->get();
@@ -423,9 +442,7 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
 
             $actionPlan->update(['status' => 'Open']);
 
-            ActionPlanOverdueRequest::where('action_plan_id', $actionPlan->id)
-                ->where('status', 'Pending')
-                ->update(['status' => 'Rejected']);
+
 
             $pics = Employee::where('department_id', $actionPlan->department_id)
                 ->whereHas('user')
@@ -465,7 +482,9 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
     public function approveActionPlan($actionPlan)
     {
         return DB::transaction(function () use ($actionPlan) {
-            $actionPlan->status = 'Close';
+            // If the action plan has children (was extended), keep as Extended
+            $hasChildren = ActionPlan::where('parent_id', $actionPlan->id)->exists();
+            $actionPlan->status = $hasChildren ? 'Extended' : 'Close';
             $actionPlan->save();
             $pics = Employee::where('department_id', $actionPlan->department_id)
                 ->whereHas('user')

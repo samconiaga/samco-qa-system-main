@@ -26,11 +26,7 @@
                             @php $groupIndex = $loop->iteration; @endphp
                             @foreach ($plans as $ap)
                             <tr>
-                                @if(isset($changeRequest->groupedActionPlans) && $changeRequest->groupedActionPlans->count() > 1)
-                                <td style="text-align: center;">{{ $groupIndex }}.{{ $loop->iteration }}</td>
-                                @else
-                                <td style="text-align: center;">{{ $loop->iteration }}</td>
-                                @endif
+                                <td style="text-align: center;">{{ $groupIndex }}.{{ $ap->tree_number }}</td>
                                 <td>{!! $ap->impact_of_change_description !!}</td>
                                 <td>{{ $ap?->department?->short_name ?? $ap?->department?->name }}</td>
                                 <td style="text-align: center;">

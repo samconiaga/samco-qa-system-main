@@ -38,4 +38,13 @@ class ActionPlan extends Model
     {
         return $this->hasMany(CompletionProofFile::class);
     }
+    public function parent()
+    {
+        return $this->belongsTo(ActionPlan::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(ActionPlan::class, 'parent_id');
+    }
 }

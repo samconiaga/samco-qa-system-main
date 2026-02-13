@@ -424,6 +424,11 @@ const en = {
         waiting_initiator_manager_approval: "Waiting Initiator Manager Approval",
         review_by_relevant_departments_and_prodev: "Review By Relevant Departments And Prodev",
         print: "Print",
+        extend: "Extend",
+        extend_action_plan: "Extend Action Plan",
+        current_realization: "Current Realization",
+        confirm_extend_action_plan: "You will extend this action plan with new details.",
+        field_required: "This field is required.",
     },
 };
 

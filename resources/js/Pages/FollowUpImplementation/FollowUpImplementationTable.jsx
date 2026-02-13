@@ -11,6 +11,8 @@ import Loading from "../../src/components/ui/Datatables/Loading";
 import TextInput from "../../src/components/ui/TextInput";
 import { stripHtml, toDateString } from "../../helper";
 import { confirmAlert } from "../../src/components/ui/SweetAlert";
+import TextAreaInput from "../../src/components/ui/TextAreaInput";
+import Select from "react-select";
 import RelatedDepartmentForm from "../Change-Request/Partials/FormComponent/RelatedDepartmentForm";
 import DeleteButton from "../../src/components/ui/Datatables/DeleteButton";
 import EditButton from "../../src/components/ui/Datatables/EditButton";
@@ -39,6 +41,16 @@ export default function FollowUpImplementationTable({
     const [isLoading, setIsLoading] = useState(false);
     const [loadingButtonId, setLoadingButtonId] = useState(null);
 
+    // === EXTEND INLINE FORM ===
+    const [showExtendForm, setShowExtendForm] = useState(false);
+    const [extendFormData, setExtendFormData] = useState({
+        impact_of_change_category: null,
+        custom_category: "",
+        impact_of_change_description: "",
+        deadline: "",
+    });
+    const [extendFormErrors, setExtendFormErrors] = useState({});
+
     // === MODAL ===
     const [show, setShow] = useState(false);
     const [modalType, setModalType] = useState("");
@@ -59,6 +71,9 @@ export default function FollowUpImplementationTable({
         deadline: null,
         completion_proof_file: [],
         realization: "",
+        impact_category: "",
+        impact_of_change_description: "",
+        custom_category: "",
     });
 
     // === LOAD DATA ===
@@ -122,13 +137,59 @@ export default function FollowUpImplementationTable({
     // =========================================================
 
     // === INDIVIDUAL ACTION WRAPPERS ===
-    const handleRequestOverdue = (id) => {
-        submitHandler(id, {
+    const handleExtend = (id, row) => {
+        setActionPlanData("id", id);
+        const categoryName =
+            row?.impact_category?.impact_of_change_category || "";
+        const isKnownCategory = impactOfChangeCategories.some(
+            (c) => c.name === categoryName,
+        );
+        setExtendFormData({
+            impact_of_change_category: isKnownCategory ? categoryName : null,
+            custom_category: isKnownCategory ? "" : categoryName,
+            impact_of_change_description: "",
+            deadline: "",
+        });
+        setExtendFormErrors({});
+        setShowExtendForm(true);
+    };
+
+    const handleCancelExtend = () => {
+        setShowExtendForm(false);
+        setExtendFormData({
+            impact_of_change_category: null,
+            custom_category: "",
+            impact_of_change_description: "",
+            deadline: "",
+        });
+        setExtendFormErrors({});
+        actionPlanReset();
+    };
+
+    const handleSubmitExtend = (e) => {
+        e.preventDefault();
+        const categoryValue =
+            extendFormData.custom_category ||
+            extendFormData.impact_of_change_category;
+        if (!categoryValue) {
+            setExtendFormErrors((prev) => ({
+                ...prev,
+                impact_of_change_category: t("field_required"),
+            }));
+            return;
+        }
+        submitHandler(actionPlanData.id, {
             method: "post",
             routeName: "change-requests.overdue-request.store",
-            confirmMsg: t("request_overdue_process"),
-            payload: {}, // ga perlu data tambahan
+            confirmMsg: t("confirm_extend_action_plan"),
+            payload: {
+                impact_category: categoryValue,
+                impact_of_change_description:
+                    extendFormData.impact_of_change_description,
+                deadline: extendFormData.deadline,
+            },
         });
+        setShowExtendForm(false);
     };
 
     const handleUploadProof = (e) => {
@@ -426,6 +487,163 @@ export default function FollowUpImplementationTable({
     );
     return (
         <>
+            {/* === EXTEND INLINE FORM === */}
+            {showExtendForm && (
+                <div className="card mb-4 border-warning">
+                    <div className="card-header bg-warning bg-opacity-10 d-flex justify-content-between align-items-center">
+                        <h6 className="mb-0">{t("extend_action_plan")}</h6>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            onClick={handleCancelExtend}
+                        ></button>
+                    </div>
+                    <div className="card-body">
+                        <div className="row">
+                            {/* Select */}
+                            <div className="col-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-bold">
+                                        {t("impact_of_change_categories")}
+                                    </label>
+                                    <Select
+                                        options={impactOfChangeCategories}
+                                        getOptionLabel={(item) => item.name}
+                                        getOptionValue={(item) => item.name}
+                                        value={
+                                            impactOfChangeCategories.find(
+                                                (opt) =>
+                                                    opt.name ===
+                                                    extendFormData.impact_of_change_category,
+                                            ) || null
+                                        }
+                                        onChange={(val) => {
+                                            setExtendFormErrors((prev) => ({
+                                                ...prev,
+                                                impact_of_change_category: null,
+                                            }));
+                                            setExtendFormData((prev) => ({
+                                                ...prev,
+                                                impact_of_change_category:
+                                                    val?.name || null,
+                                                custom_category: val
+                                                    ? ""
+                                                    : prev.custom_category,
+                                            }));
+                                        }}
+                                        placeholder={t("select_category")}
+                                        isClearable
+                                        isSearchable
+                                        menuPortalTarget={document.body}
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999,
+                                            }),
+                                            menu: (base) => ({
+                                                ...base,
+                                                zIndex: 9999,
+                                            }),
+                                        }}
+                                        isDisabled={true}
+                                    />
+                                    {extendFormErrors?.impact_of_change_category && (
+                                        <div className="text-danger mt-2">
+                                            {
+                                                extendFormErrors.impact_of_change_category
+                                            }
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Other category */}
+                            <div className="col-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-bold">
+                                        {t("impact_of_change_categories")} (
+                                        {t("other")})
+                                    </label>
+                                    <TextInput
+                                        value={
+                                            extendFormData.custom_category || ""
+                                        }
+                                        placeholder={t("enter_attribute", {
+                                            attribute: t("category"),
+                                        })}
+                                        disabled={true}
+                                        readOnly
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Description */}
+                            <div className="col-12">
+                                <div className="mb-3">
+                                    <label className="form-label fw-bold">
+                                        {t("impact_of_change_description")}
+                                    </label>
+                                    <TextAreaInput
+                                        autoComplete="off"
+                                        placeholder={t("enter_attribute", {
+                                            attribute: t(
+                                                "impact_of_change_description",
+                                            ),
+                                        })}
+                                        value={
+                                            extendFormData.impact_of_change_description
+                                        }
+                                        onChange={(e) =>
+                                            setExtendFormData((prev) => ({
+                                                ...prev,
+                                                impact_of_change_description:
+                                                    e.target.value,
+                                            }))
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Due date */}
+                            <div className="col-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-bold">
+                                        {t("due_date")}
+                                    </label>
+                                    <TextInput
+                                        type="date"
+                                        value={extendFormData.deadline || ""}
+                                        onChange={(e) =>
+                                            setExtendFormData((prev) => ({
+                                                ...prev,
+                                                deadline: e.target.value,
+                                            }))
+                                        }
+                                        placeholder={t("enter_attribute", {
+                                            attribute: t("due_date"),
+                                        })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="d-flex gap-2">
+                            <Button
+                                className="btn btn-sm btn-danger"
+                                onClick={handleSubmitExtend}
+                            >
+                                {t("save")}
+                            </Button>
+                            <Button
+                                className="btn btn-sm btn-secondary"
+                                onClick={handleCancelExtend}
+                            >
+                                {t("cancel")}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* <div className="datatable-wrapper" style={{ overflowX: "auto" }}>
                 <DataTable
                     columns={COLUMN}
@@ -579,8 +797,9 @@ export default function FollowUpImplementationTable({
                                                         <Button
                                                             className="btn btn-sm btn-warning me-2"
                                                             onClick={() =>
-                                                                handleRequestOverdue(
+                                                                handleExtend(
                                                                     row.id,
+                                                                    row,
                                                                 )
                                                             }
                                                             isLoading={
@@ -589,12 +808,8 @@ export default function FollowUpImplementationTable({
                                                             }
                                                             loadingType={2}
                                                         >
-                                                            <Icon
-                                                                icon="mdi:history"
-                                                                className="me-2"
-                                                                width="18"
-                                                                height="18"
-                                                            />
+                                                            <Icon height="18" />
+                                                            {t("extend")}
                                                         </Button>
 
                                                         <Button
@@ -622,6 +837,39 @@ export default function FollowUpImplementationTable({
                                                             />
                                                         </Button>
                                                     </>
+                                                );
+                                            }
+
+                                            // Jika status Extended dan PIC → hanya upload
+                                            if (
+                                                row.status === "Extended" &&
+                                                isPIC
+                                            ) {
+                                                return (
+                                                    <Button
+                                                        onClick={() =>
+                                                            handleShow(
+                                                                "upload",
+                                                                row.id,
+                                                                t(
+                                                                    "upload_proof_of_work",
+                                                                ),
+                                                            )
+                                                        }
+                                                        className="btn btn-info btn-sm"
+                                                        isLoading={
+                                                            loadingButtonId ===
+                                                            row.id
+                                                        }
+                                                        loadingType={2}
+                                                    >
+                                                        <Icon
+                                                            icon="mdi:upload"
+                                                            className="me-2"
+                                                            width="18"
+                                                            height="18"
+                                                        />
+                                                    </Button>
                                                 );
                                             }
 
@@ -660,11 +908,12 @@ export default function FollowUpImplementationTable({
                                                 );
                                             }
 
-                                            // Jika Request Overdue / Submitted dan QA SPV bisa approve
+                                            // Jika Request Overdue / Submitted / Pending dan QA SPV bisa approve
                                             if (
                                                 [
                                                     "Request Overdue",
                                                     "Submitted",
+                                                    "Pending",
                                                 ].includes(row.status) &&
                                                 permissions.includes(
                                                     "Approve QA SPV",
@@ -676,8 +925,12 @@ export default function FollowUpImplementationTable({
                                                             className="btn btn-success btn-sm me-2"
                                                             onClick={() => {
                                                                 if (
-                                                                    row.status ===
-                                                                    "Request Overdue"
+                                                                    [
+                                                                        "Request Overdue",
+                                                                        "Pending",
+                                                                    ].includes(
+                                                                        row.status,
+                                                                    )
                                                                 ) {
                                                                     handleShow(
                                                                         "approve overdue",
@@ -685,6 +938,11 @@ export default function FollowUpImplementationTable({
                                                                         t(
                                                                             "overdue_submission",
                                                                         ),
+                                                                    );
+                                                                    setActionPlanData(
+                                                                        "deadline",
+                                                                        row.deadline ||
+                                                                            "",
                                                                     );
                                                                 } else {
                                                                     handleApproveActionPlan(
@@ -820,6 +1078,8 @@ export default function FollowUpImplementationTable({
                             handleUploadProof(e);
                         } else if (modalType == "edit") {
                             handleEdit(e);
+                        } else if (modalType === "extend") {
+                            // Extend is now handled inline, not in modal
                         } else {
                             handleApproveOverdue(actionPlanData.id);
                         }

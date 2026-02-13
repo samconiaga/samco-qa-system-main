@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Fpdi\PdfWithFooter;
 use App\Models\FollowUpImplementation;
 use App\Models\ImpactOfChangeCategory;
-use App\Models\ActionPlanOverdueRequest;
+
 use App\Http\Requests\ChangeRequest\OverdueRequest;
 use App\Http\Requests\ChangeRequest\ProofOfWorkRequest;
 use App\Http\Requests\ChangeRequest\ChangeRequestRequest;
@@ -288,16 +288,20 @@ class CChangeRequest extends Controller
         return $this->safeInertiaExecute(function () use ($request) {
             $actionPlanId = $request->id;
 
-            // Hitung overdue yang sudah ada untuk action plan ini
-            $existingOverdueCount = ActionPlanOverdueRequest::where('action_plan_id', $actionPlanId)
-                ->whereIn('status', ['Pending', 'Approved', 'Rejected'])
-                ->count();
-
-            if ($existingOverdueCount >= 2) {
-                return redirect()->back()->with('error', __('Maximum 2 overdue requests allowed for this Action Plan'));
+            // Count chain depth by walking up parent_id
+            $depth = 0;
+            $current = ActionPlan::find($actionPlanId);
+            while ($current->parent_id) {
+                $depth++;
+                $current = ActionPlan::find($current->parent_id);
             }
+
+            if ($depth >= 2) {
+                return redirect()->back()->with('error', __('Maximum 2 extend requests allowed for this Action Plan'));
+            }
+
             $this->changeRequestRepository->requestOverdue($request);
-            return redirect()->back()->with('success', __("Overdue Request Has Been Sent"));
+            return redirect()->back()->with('success', __("Extend Request Has Been Sent"));
         });
     }
     public function approveOverdue(ApproveOverdueRequest $request)
@@ -536,13 +540,70 @@ class CChangeRequest extends Controller
         $render('print.change-request.risk-assessment', 'landscape');
 
         // Group action plans by impact of change category
-        $groupedActionPlans = $changeRequest->actionPlans
-            ->sortBy(function ($ap) {
-                return $ap->impactCategory?->impact_of_change_category ?? '';
-            })
-            ->groupBy(function ($ap) {
-                return $ap->impactCategory?->impact_of_change_category ?? 'Uncategorized';
+        // Group action plans by impact of change category and apply hierarchical numbering
+        $allPlans = $changeRequest->actionPlans->sortBy(function ($ap) {
+            return $ap->impactCategory?->impact_of_change_category ?? '';
+        });
+
+        $groupedActionPlans = $allPlans->groupBy(function ($ap) {
+            return $ap->impactCategory?->impact_of_change_category ?? 'Uncategorized';
+        });
+
+        // Process each group to assign hierarchical numbers (1, 1.1, 1.1.1, etc.)
+        $groupedActionPlans = $groupedActionPlans->map(function ($plans) {
+            // Build adjacency list
+            $byParent = [];
+            $roots = [];
+
+            // Map by ID for easy lookup
+            $planMap = $plans->keyBy('id');
+
+            foreach ($plans as $plan) {
+                if ($plan->parent_id && $planMap->has($plan->parent_id)) {
+                    $byParent[$plan->parent_id][] = $plan;
+                } else {
+                    $roots[] = $plan;
+                }
+            }
+
+            // Function to assign numbers: Roots get "1", "2"... Children get "1.1", "1.2"...
+            $flattened = collect();
+
+            // Sort roots by created_at
+            usort($roots, function ($a, $b) {
+                return strcmp($a->created_at, $b->created_at);
             });
+
+            // Helper for children (extensions) - Linear Depth
+            $traverseChildren = function ($nodes, $rootNumber, $depth) use (&$traverseChildren, &$flattened, $byParent) {
+                // Sort by created_at
+                usort($nodes, function ($a, $b) {
+                    return strcmp($a->created_at, $b->created_at);
+                });
+
+                foreach ($nodes as $node) {
+                    // Start depth at 1. So 1.1, 1.2, etc.
+                    $node->tree_number = $rootNumber . '.' . $depth;
+                    $flattened->push($node);
+
+                    if (isset($byParent[$node->id])) {
+                        // Pass same root number, increment depth
+                        $traverseChildren($byParent[$node->id], $rootNumber, $depth + 1);
+                    }
+                }
+            };
+
+            foreach ($roots as $index => $root) {
+                $rootNum = ($index + 1);
+                $root->tree_number = $rootNum;
+                $flattened->push($root);
+
+                if (isset($byParent[$root->id])) {
+                    $traverseChildren($byParent[$root->id], $rootNum, 1);
+                }
+            }
+            return $flattened;
+        });
 
         // Pass groupedActionPlans to the view by encoding it into the changeRequest object or a separate variable if the view supports it.
         // Since the render function only takes compact('changeRequest'), we can attach it to the changeRequest object as a temporary property.

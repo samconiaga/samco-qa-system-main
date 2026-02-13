@@ -41,10 +41,11 @@ class OverdueRequest extends FormRequest
      */
     public function rules(): array
     {
-        $dataValidate = [];
-        foreach (array_keys($this->fill) as $key) {
-            $dataValidate[$key] = ($this->fill[$key] == 1) ? 'required' : 'nullable';
-        }
-        return $dataValidate;
+        return [
+            'id' => 'required',
+            'impact_category' => 'required|string',
+            'impact_of_change_description' => 'required|string',
+            'deadline' => 'required|date',
+        ];
     }
 }
