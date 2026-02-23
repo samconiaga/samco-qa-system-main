@@ -621,9 +621,9 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
             }
 
             // 7️⃣ Validasi detail Action Plan
-            $hasInvalidAgreeDetail = FollowUpImplementation::where('change_request_id', $changeRequest->id)
-                ->where('evaluation_status', 'Agree')
-                ->whereDoesntHave('detail', function ($q) {
+            $hasInvalidAgreeDetail = ActionPlan::where('change_request_id', $changeRequest->id)
+                ->whereIn('department_id', $agreeDepartmentIds)
+                ->where(function ($q) {
                     $q->whereNull('status')
                         ->orWhere('status', '!=', 'Pending');
                 })
@@ -717,15 +717,12 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
     {
         $changeRequest = $actionPlan->changeRequest;
 
-        // Load action plans sekali query
-        $changeRequest->loadMissing('actionPlans');
+        // Cek apakah masih ada action plan yang belum close atau extended
+        $hasUnclosed = $changeRequest->actionPlans()
+            ->whereNotIn('status', ['Close', 'Extended'])
+            ->exists();
 
-        // Cek apakah masih ada action plan yang tidak close
-        $allClosed = $changeRequest->actionPlans
-            ->where('status', '!=', 'Close')
-            ->isEmpty();
-
-        if ($allClosed) {
+        if (!$hasUnclosed) {
             $this->moveToNextStage($changeRequest, 'To Waiting Close');
         }
     }
