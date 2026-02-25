@@ -1,7 +1,7 @@
 @php
-    use Carbon\Carbon;
+use Carbon\Carbon;
 
-    $isChecked = fn($cond) => $cond ? 'checked' : '';
+$isChecked = fn($cond) => $cond ? 'checked' : '';
 
 @endphp
 <div style="margin-top: 0.5cm">
@@ -20,7 +20,7 @@
                         {{ __('Mention') }} :
                         <ol style="margin: 4px 0 0 26px; padding: 0;">
                             @foreach ($changeRequest->affectedProducts as $product)
-                                <li>{{ $product->name }}</li>
+                            <li>{{ $product->name }}</li>
                             @endforeach
                         </ol>
                     </div>
@@ -40,8 +40,8 @@
                         </span>
                     </label>
                     @if ($changeRequest?->regulatory->third_party_involved)
-                        <br><br>
-                        {{ __('Mention') }} : {{ $changeRequest?->regulatory?->third_party_name }}
+                    <br><br>
+                    {{ __('Mention') }} : {{ $changeRequest?->regulatory?->third_party_name }}
                     @endif
                 </td>
             </tr>
@@ -67,20 +67,20 @@
                 <th style="text-align: center;">{{ __('Comment') }}</th>
             </tr>
 
-            @forelse ($changeRequest->followUpImplementations  as $index => $fup)
-                <tr>
-                    <td style="text-align: center;">{{ $index + 1 }}</td>
-                    <td>{{ $fup->employee->employee_code ?? '-' }}</td>
-                    <td>{{ $fup->created_at }}</td>
-                    <td>
-                        ({{ __($fup->evaluation_status) }})
-                        {{ $fup->comments }}
-                    </td>
-                </tr>
+            @forelse ($changeRequest->followUpImplementations as $index => $fup)
+            <tr>
+                <td style="text-align: center;">{{ $index + 1 }}</td>
+                <td>{{ $fup->employee->employee_code ?? '-' }}</td>
+                <td>{{ $fup->created_at }}</td>
+                <td>
+                    ({{ __($fup->evaluation_status) }})
+                    {{ $fup->comments }}
+                </td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="4" style="text-align: center;">-</td>
-                </tr>
+            <tr>
+                <td colspan="4" style="text-align: center;">-</td>
+            </tr>
             @endforelse
         </tbody>
     </table>
