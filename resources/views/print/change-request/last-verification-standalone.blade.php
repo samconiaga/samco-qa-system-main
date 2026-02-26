@@ -8,12 +8,6 @@ $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), t
         size: A4 portrait;
         margin-bottom: 2.5cm !important;
         font-size: 1px !important;
-
-    }
-
-    @page landscape {
-        size: A4 landscape;
-        margin: 0.5cm;
     }
 
     @media print {
@@ -21,13 +15,6 @@ $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), t
             margin: 0;
         }
 
-        /* jangan pakai height / min-height halaman */
-        .page-break {
-            page-break-before: always;
-            break-before: page;
-        }
-
-        /* BIAR KONTEN BOLEH LANJUT */
         table {
             page-break-inside: auto;
         }
@@ -36,13 +23,8 @@ $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), t
             page-break-inside: avoid;
             page-break-after: auto;
         }
-
-        .landscape-page {
-            page: landscape;
-        }
     }
 
-    /* TABLE */
     .print-table {
         width: 100%;
         border-collapse: collapse;
@@ -69,22 +51,10 @@ $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), t
     <meta charset="utf-8">
     <title>{{ $changeRequest->title }}</title>
     <link rel="stylesheet" href="{{ public_path('assets/css/lib/bootstrap.min.css') }}">
-    <link rel="icon" type="image/png" href="{{ public_path('assets/images/favicon.png') }}" sizes="16x16">
 </head>
 
-<body style="margin-top:3.2mm;">
-
-    {{-- ================= HALAMAN 1 ================= --}}
-    <div class="print-page">
-        <div style="text-align: center; margin-bottom: 0.5cm; line-height: 1.2;">
-            @include('print.change-request.partials.related-department')
-        </div>
-        <div style="page-break-before: always;"></div>
-        <div style="text-align: center; margin-bottom: 0.5cm; line-height: 1.2;">
-            @include('print.change-request.partials.follow-up-implementation')
-            @include('print.change-request.partials.regulatory')
-        </div>
-    </div>
+<body style="margin-top: 3.2mm;">
+    @include('print.change-request.partials.last-verification')
 </body>
 
 </html>

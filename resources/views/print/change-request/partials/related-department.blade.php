@@ -70,7 +70,11 @@ $isChecked = fn($cond) => $cond ? 'checked' : '';
             @forelse ($changeRequest->followUpImplementations as $index => $fup)
             <tr>
                 <td style="text-align: center;">{{ $index + 1 }}</td>
-                <td>{{ $fup->employee->employee_code ?? '-' }}</td>
+                <td>
+                    {{ $fup->employee->name ?? '-' }}
+                    <br>
+                    <small> - {{ $fup->employee->department->name ?? '-' }}</small>
+                </td>
                 <td>{{ $fup->created_at }}</td>
                 <td>
                     ({{ __($fup->evaluation_status) }})

@@ -609,7 +609,9 @@ class CChangeRequest extends Controller
         // Since the render function only takes compact('changeRequest'), we can attach it to the changeRequest object as a temporary property.
         $changeRequest->groupedActionPlans = $groupedActionPlans;
 
-        $render('print.change-request.other', 'potrait');
+        $render('print.change-request.other', 'portrait');
+        $render('print.change-request.corrective-action-standalone', 'portrait');
+        $render('print.change-request.last-verification-standalone', 'portrait');
 
         foreach (
             array_merge(

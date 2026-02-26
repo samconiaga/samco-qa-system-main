@@ -262,30 +262,32 @@ export default function Show({ title, changeRequest, ...props }) {
                                                 <span>{t("review")}</span>
                                             </Link>
                                         )}
-                                    {changeRequest.overall_status ==
-                                        "Reviewed" ||
-                                        (changeRequest.overall_status ==
-                                            "In Progress" && (
-                                            <Button
-                                                className="btn btn-danger btn-sm d-inline-flex align-items-center gap-1"
-                                                onClick={() =>
-                                                    setActiveTab(
-                                                        "related-department-assessment",
-                                                    )
-                                                }
-                                            >
-                                                <Icon icon="mdi:print-preview" />
-                                                {t(
-                                                    "related_department_assessment",
-                                                )}
-                                            </Button>
-                                        ))}
-                                    {changeRequest.overall_status ===
-                                        "Closed" && (
+                                    {["Reviewed", "In Progress"].includes(
+                                        changeRequest.overall_status,
+                                    ) && (
+                                        <Button
+                                            className="btn btn-danger btn-sm d-inline-flex align-items-center gap-1"
+                                            onClick={() =>
+                                                setActiveTab(
+                                                    "related-department-assessment",
+                                                )
+                                            }
+                                        >
+                                            <Icon icon="mdi:print-preview" />
+                                            {t("related_department_assessment")}
+                                        </Button>
+                                    )}
+                                    {[
+                                        "In Progress",
+                                        "Waiting Close",
+                                        "Closed",
+                                    ].includes(
+                                        changeRequest.overall_status,
+                                    ) && (
                                         <Button
                                             key="print"
                                             type="button"
-                                            className="btn btn-sm btn-secondary me-2"
+                                            className="btn btn-sm btn-secondary ms-2"
                                             loadingType={2}
                                             onClick={() =>
                                                 handlePrint(changeRequest.id)
