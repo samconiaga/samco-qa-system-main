@@ -1,21 +1,21 @@
 @php
-    $isChecked = fn($cond) => $cond ? 'checked' : '';
-    $qaSpvApproval = $changeRequest->approvals
-        ->where('stage', 'Approve QA SPV')
-        ->where('decision', 'Approved')
-        ->sortByDesc('updated_at')
-        ->first();
+$isChecked = fn($cond) => $cond ? 'checked' : '';
+$qaSpvApproval = $changeRequest->approvals
+->where('stage', 'Approve QA SPV')
+->where('decision', 'Approved')
+->sortByDesc('updated_at')
+->first();
 
-    $qaManagerApproval = $changeRequest->approvals
-        ->where('stage', 'Approve QA Manager')
-        ->where('decision', 'Approved')
-        ->sortByDesc('updated_at')
-        ->first();
-    $plantManagerApproval = $changeRequest->approvals
-        ->where('stage', 'Approve Plant Manager')
-        ->where('decision', 'Approved')
-        ->sortByDesc('updated_at')
-        ->first();
+$qaManagerApproval = $changeRequest->approvals
+->where('stage', 'Approve QA Manager')
+->where('decision', 'Approved')
+->sortByDesc('updated_at')
+->first();
+$plantManagerApproval = $changeRequest->approvals
+->where('stage', 'Approve Plant Manager')
+->where('decision', 'Approved')
+->sortByDesc('updated_at')
+->first();
 @endphp
 
 <div style="margin-top: 1cm">
@@ -51,17 +51,35 @@
             </tr>
             <tr height="15px">
                 <td style="padding-top:10px; padding-bottom:30px; width:35%;">Quality Assurance Sub Dept. Head</td>
-                <td width="15%">{{ $qaSpvApproval->approved_at }}</td>
+                <td width="25%" style="text-align: center;">
+                    <div style="font-size: 11px;">
+                        {{ __('Approved By') }}<br>
+                        {{ $qaSpvApproval?->approver?->name ?? '-' }}<br>
+                        {{ $qaSpvApproval->approved_at ?? '-' }}
+                    </div>
+                </td>
                 <td></td>
             </tr>
             <tr height="15px">
                 <td style="padding-top:10px; padding-bottom:30px;">Quality Assurance Dept. Head</td>
-                <td>{{ $qaManagerApproval->approved_at }}</td>
+                <td style="text-align: center;">
+                    <div style="font-size: 11px;">
+                        {{ __('Approved By') }}<br>
+                        {{ $qaManagerApproval?->approver?->name ?? '-' }}<br>
+                        {{ $qaManagerApproval->approved_at ?? '-' }}
+                    </div>
+                </td>
                 <td></td>
             </tr>
             <tr height="15px">
                 <td style="padding-top:10px; padding-bottom:30px;">Plant Division Head</td>
-                <td>{{ $plantManagerApproval->approved_at }}</td>
+                <td style="text-align: center;">
+                    <div style="font-size: 11px;">
+                        {{ __('Approved By') }}<br>
+                        {{ $plantManagerApproval?->approver?->name ?? '-' }}<br>
+                        {{ $plantManagerApproval->approved_at ?? '-' }}
+                    </div>
+                </td>
                 <td></td>
             </tr>
         </tbody>
@@ -131,41 +149,47 @@
                                 {{-- <div style="margin: 15px 0 35px 0; height: 50px;">
                                     @if (!empty($qaSpvApproval?->approver?->sign))
                                         <img src="{{ public_path('storage/' . $qaSpvApproval->approver->sign) }}"
-                                            height="60">
-                                    @endif
-                                </div> --}}
+                                height="60">
+                                @endif
+</div> --}}
 
-                                <div style="font-size: 11px;">
-                                    {{ $changeRequest?->closing?->qa_spv_sign }}
-                                </div>
-                                <div>Quality Assurance Sub Dept. Head</div>
-                            </td>
+<div style="font-size: 11px;">
+    {{ $qaSpvApproval?->approver?->name ?? '-' }}
+</div>
+<div style="font-size: 11px;">
+    {{ $changeRequest?->closing?->qa_spv_sign }}
+</div>
+<div>Quality Assurance Sub Dept. Head</div>
+</td>
 
-                            {{-- ================= QA MANAGER ================= --}}
-                            <td style="vertical-align: top;">
-                                <div>{{ __('Approved By') }},</div>
+{{-- ================= QA MANAGER ================= --}}
+<td style="vertical-align: top;">
+    <div>{{ __('Approved By') }},</div>
 
 
-                                <div style="margin-bottom: 20px;">{{ __('Sign And Date') }}</div>
-                                {{-- Area TTD --}}
-                                {{-- <div style="margin: 15px 0 35px 0; height: 50px;">
+    <div style="margin-bottom: 20px;">{{ __('Sign And Date') }}</div>
+    {{-- Area TTD --}}
+    {{-- <div style="margin: 15px 0 35px 0; height: 50px;">
                                     @if (!empty($qaManagerApproval?->approver?->sign))
                                         <img src="{{ public_path('storage/' . $qaManagerApproval->approver->sign) }}"
-                                            height="60">
-                                    @endif
-                                </div> --}}
-                                <div style="font-size: 11px;">
-                                    {{ $changeRequest?->closing?->qa_manager_sign }}
-                                </div>
-                                <div>Quality Assurance Dept. Head</div>
+    height="60">
+    @endif
+    </div> --}}
+    <div style="font-size: 11px;">
+        {{ $qaManagerApproval?->approver?->name ?? '-' }}
+    </div>
+    <div style="font-size: 11px;">
+        {{ $changeRequest?->closing?->qa_manager_sign }}
+    </div>
+    <div>Quality Assurance Dept. Head</div>
 
-                            </td>
-                        </tr>
-                    </table>
+</td>
+</tr>
+</table>
 
-                </td>
-            </tr>
+</td>
+</tr>
 
-        </tbody>
-    </table>
+</tbody>
+</table>
 </div>

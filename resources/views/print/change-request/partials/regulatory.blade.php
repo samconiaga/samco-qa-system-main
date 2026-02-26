@@ -1,22 +1,22 @@
 @php
-    $facilityAffected = $changeRequest->impactOfChangeAssesment?->facility_affected;
-    $regulatory = $changeRequest->regulatory?->regulatory_change_type;
-    $map = [
-        'yes_after_bpom_notification' => 'Yes After BPOM Notification',
-        'Yes After BPOM Notification' => 'Yes After BPOM Notification',
+$facilityAffected = $changeRequest->impactOfChangeAssesment?->facility_affected;
+$regulatory = $changeRequest->regulatory?->regulatory_change_type;
+$map = [
+'yes_after_bpom_notification' => 'Yes After BPOM Notification',
+'Yes After BPOM Notification' => 'Yes After BPOM Notification',
 
-        'yes_bpom_notification_required' => 'Yes, BPOM Notification Required',
-        'Yes, BPOM Notification Required' => 'Yes, BPOM Notification Required',
+'yes_bpom_notification_required' => 'Yes, BPOM Notification Required',
+'Yes, BPOM Notification Required' => 'Yes, BPOM Notification Required',
 
-        'facility_no' => 'No',
-    ];
+'facility_no' => 'No',
+];
 
-    $normalized = $map[$facilityAffected] ?? null;
-    $prodevApproval = $changeRequest->approvals
-        ->where('stage', 'Review Prodev Manager')
-        ->where('decision', 'Approved')
-        ->sortByDesc('updated_at')
-        ->first();
+$normalized = $map[$facilityAffected] ?? null;
+$prodevApproval = $changeRequest->approvals
+->where('stage', 'Review Prodev Manager')
+->where('decision', 'Approved')
+->sortByDesc('updated_at')
+->first();
 @endphp
 
 {{-- ================= K. PERIZINAN PERUBAHAN FASILITAS ================= --}}
@@ -120,7 +120,7 @@
                     <table class="no-border" style="width:100%; ">
                         {{-- TANPA PERSETUJUAN BPOM --}}
                         <tr>
-                            <td style="width:14px; vertical-align:top; padding:0px; !important;">
+                            <td style="width:14px; vertical-align:top; padding:0px !important;">
                                 <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
                                     <input type="checkbox"
                                         {{ $regulatory === 'regulatory_change_type_1' || $regulatory === 'regulatory_change_type_2' ? 'checked' : '' }}
@@ -173,9 +173,9 @@
 
             <tr>
                 <td width="50%" style="text-align: center">
-                    {{ __('Sign And Date') }}
+                    {{ __('Sign And Date') }}<br>
                     <small>{{ __('Approved By') }}</small><br>
-                    <small>{{ $prodevApproval?->approver?->employee_code ?? '-' }}</small><br>
+                    <small>{{ $prodevApproval?->approver?->name ?? '-' }}</small><br>
                     <small>{{ $prodevApproval->approved_at ?? '-' }}</small><br>
                     <small>{{ __('Technical Dossier & Packaging Development Manager') }}</small>
                 </td>
@@ -251,23 +251,23 @@
             {{-- <tr>
                 <td width="40%">
                     {{ __("Changes require approval from the exporting country's regulatory agency.") }}
-                </td>
-                <td style="width:15%; vertical-align:top;">
-                    <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
-                        <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
-                        <span style="position: relative; top: 5px;">
-                            {{ __('Yes') }}
-                        </span>
-                    </label>
-                </td>
-                <td style="width:15%; vertical-align:top;">
-                    <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
-                        <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
-                        <span style="position: relative; top: 5px;">
-                            {{ __('No') }}
-                        </span>
-                    </label>
-                </td>
+            </td>
+            <td style="width:15%; vertical-align:top;">
+                <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
+                    <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
+                    <span style="position: relative; top: 5px;">
+                        {{ __('Yes') }}
+                    </span>
+                </label>
+            </td>
+            <td style="width:15%; vertical-align:top;">
+                <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
+                    <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
+                    <span style="position: relative; top: 5px;">
+                        {{ __('No') }}
+                    </span>
+                </label>
+            </td>
             </tr> --}}
 
             {{-- KAJIAN TERKAIT HALAL --}}
