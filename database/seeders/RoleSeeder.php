@@ -21,6 +21,7 @@ class RoleSeeder extends Seeder
         Permission::updateOrCreate(['name' => 'Approve Manager']);
         Permission::updateOrCreate(['name' => 'Approve QA SPV']);
         Permission::updateOrCreate(['name' => 'Review Prodev Manager']);
+        Permission::updateOrCreate(['name' => 'Review PPIC Manager']);
         Permission::updateOrCreate(['name' => 'Approve QA Manager']);
         Permission::updateOrCreate(['name' => 'Approve Plant Manager']);
         Permission::updateOrCreate(['name' => 'PIC Action Plan']);

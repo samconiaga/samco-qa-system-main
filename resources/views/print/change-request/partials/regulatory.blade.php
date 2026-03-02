@@ -189,48 +189,44 @@ $prodevApproval = $changeRequest->approvals
             </tr>
             <tr>
                 <td style="padding:4px 0;" colspan="3">
-                    <table style="width:100%; border:none; border-collapse:collapse;">
+                    <table style="border:none; border-collapse:collapse;">
+                        <colgroup>
+                            <col style="width:auto;">
+                            <col style="width:80px;">
+                            <col style="width:80px;">
+                        </colgroup>
                         <tr>
-                            <td style="width:50%; border:none; vertical-align:top;">
-                                {!! __('Changes require approval from the toll manufacturing party.') !!}
+                            <td style="border:none; vertical-align:middle; padding:4px;">
+                                {!! __('Will the change be informed to the Toll Manufacturing party?') !!}
                             </td>
-                            <td style="width:15%; border:none; vertical-align:top;">
-                                <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
-                                    <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
-                                    <span style="position: relative; top: 5px;">
-                                        {{ __('Yes') }}
-                                    </span>
-                                </label>
+                            <td style="border:none; vertical-align:middle; padding:4px; white-space:nowrap;">
+                                <input type="checkbox"
+                                    {{ $changeRequest->impactOfChangeAssesment?->is_informed_to_toll_manufacturing ? 'checked' : '' }}
+                                    style="margin-right: 4px; vertical-align: middle;">
+                                <span style="vertical-align: middle;">{{ __('Yes') }}</span>
                             </td>
-                            <td style="width:15%; border:none; vertical-align:top;">
-                                <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
-                                    <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
-                                    <span style="position: relative; top: 5px;">
-                                        {{ __('No') }}
-                                    </span>
-                                </label>
+                            <td style="border:none; vertical-align:middle; padding:4px; white-space:nowrap;">
+                                <input type="checkbox"
+                                    {{ $changeRequest->impactOfChangeAssesment && $changeRequest->impactOfChangeAssesment->is_informed_to_toll_manufacturing === false ? 'checked' : '' }}
+                                    style="margin-right: 4px; vertical-align: middle;">
+                                <span style="vertical-align: middle;">{{ __('No') }}</span>
                             </td>
                         </tr>
-
                         <tr>
-                            <td style="width:50%; border:none; vertical-align:top;">
-                                {!! __('Changes require approval from the toll manufacturing party.') !!}
+                            <td style="border:none; vertical-align:middle; padding:4px;">
+                                {!! __('Does the change require approval from the Toll Manufacturing party?') !!}
                             </td>
-                            <td style="width:15%; border:none; vertical-align:top;">
-                                <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
-                                    <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
-                                    <span style="position: relative; top: 5px;">
-                                        {{ __('Yes') }}
-                                    </span>
-                                </label>
+                            <td style="border:none; vertical-align:middle; padding:4px; white-space:nowrap;">
+                                <input type="checkbox"
+                                    {{ $changeRequest->impactOfChangeAssesment?->is_approval_required_from_toll_manufacturing ? 'checked' : '' }}
+                                    style="margin-right: 4px; vertical-align: middle;">
+                                <span style="vertical-align: middle;">{{ __('Yes') }}</span>
                             </td>
-                            <td style="width:15%; border:none; vertical-align:top;">
-                                <label style="margin-right: 1cm; white-space: normal; display: inline-block;">
-                                    <input type="checkbox" style="position: relative; top: 10px; margin-right: 4px;">
-                                    <span style="position: relative; top: 5px;">
-                                        {{ __('No') }}
-                                    </span>
-                                </label>
+                            <td style="border:none; vertical-align:middle; padding:4px; white-space:nowrap;">
+                                <input type="checkbox"
+                                    {{ $changeRequest->impactOfChangeAssesment && $changeRequest->impactOfChangeAssesment->is_approval_required_from_toll_manufacturing === false ? 'checked' : '' }}
+                                    style="margin-right: 4px; vertical-align: middle;">
+                                <span style="vertical-align: middle;">{{ __('No') }}</span>
                             </td>
                         </tr>
                     </table>

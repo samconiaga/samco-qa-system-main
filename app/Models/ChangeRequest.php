@@ -262,6 +262,13 @@ class ChangeRequest extends Model
                 });
             }
 
+            // 7️⃣ PPIC Head bisa lihat CR yang melibatkan third party
+            if ($user->can('Review PPIC Manager')) {
+                $q->orWhereHas('impactOfChangeAssesment', function ($ioc) {
+                    $ioc->where('third_party_involved', true);
+                });
+            }
+
             // 7️⃣ Jika tidak punya privilege & akses lain, kosongkan
             if (
                 !$isPrivileged &&

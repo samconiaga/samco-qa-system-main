@@ -474,7 +474,6 @@
     "Note": "Catatan",
     "Third Party Consent": "Persetujuan Pihak Ketiga",
     "Changes will be communicated to the toll Manufacturing party.": "Perubahan akan diinformasikan ke pihak <i>Toll Manufacturing</i>",
-    "Changes require approval from the toll manufacturing party.": "Perubahan memerlukan persetujuan pihak <i>Toll Manufacturing</i>",
     "Third Party": "Pihak Ketiga",
     "Approved By": "Disetujui Oleh",
     "Changes require approval from the exporting country's regulatory agency.": "Perubahan memerlukan persetujuan Badan Regulasi Negara ekspor",
@@ -494,5 +493,7 @@
     "Initials And Date": "Paraf Dan Tanggal",
     "Changes Not Related to Facilities.": "Perubahan Tidak Terkait Fasilitas.",
     "Realization": "Realisasi",
-    "impact_of_change": "Dampak Perubahan"
+    "impact_of_change": "Dampak Perubahan",
+    "Will the change be informed to the Toll Manufacturing party?": "Perubahan akan diinformasikan ke pihak <i>Toll Manufacturing</i> ?",
+    "Does the change require approval from the Toll Manufacturing party?": "Perubahan memerlukan persetujuan pihak <i>Toll Manufacturing</i> ?"
 }

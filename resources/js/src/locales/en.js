@@ -422,13 +422,16 @@ const en = {
         waiting_qa_manager_approval: "Waiting QA Manager Approval",
         waiting_plant_manager_approval: "Waiting Plant Manager Approval",
         waiting_initiator_manager_approval: "Waiting Initiator Manager Approval",
-        review_by_relevant_departments_and_prodev: "Review By Relevant Departments And Prodev",
+        review_by_relevant_departments_prodev_ppic: "Review By Relevant Departments, Prodev, & PPIC",
         print: "Print",
         extend: "Extend",
         extend_action_plan: "Extend Action Plan",
         current_realization: "Current Realization",
         confirm_extend_action_plan: "You will extend this action plan with new details.",
         field_required: "This field is required.",
+        is_informed_to_toll_manufacturing: "Will the change be informed to the Toll Manufacturing party?",
+        is_approval_required_from_toll_manufacturing: "Does the change require Toll Manufacturing party's approval?",
+        ppic_assessment: "PPIC Assessment",
     },
 };
 

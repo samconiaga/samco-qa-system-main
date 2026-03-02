@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('change-requests')->name('change-requests.')->group(function () {
 
         Route::resource('regulatory-assessments', CRegulatoryAssesment::class);
+        Route::resource('ppic-assessments', \App\Http\Controllers\PPICAssessmentController::class);
         Route::resource('follow-up-implementations', CFollowUpImplementation::class);
         Route::get('/', [CChangeRequest::class, 'index'])->name('index');
         Route::get('/create', [CChangeRequest::class, 'create'])->name('create');
@@ -81,6 +82,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('issue/resolution', CIssueResolution::class);
     });
 
-    Route::post('profile/change-photo',[CProfile::class, 'changePhoto'])->name('profile.change-photo');
+    Route::post('profile/change-photo', [CProfile::class, 'changePhoto'])->name('profile.change-photo');
     Route::resource('profile', CProfile::class);
 });

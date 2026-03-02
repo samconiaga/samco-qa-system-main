@@ -228,7 +228,7 @@ export default function Index({ title }) {
                                                               "Reviewed" ? (
                                                                 <span className="badge bg-info text-wrap">
                                                                     {t(
-                                                                        "review_by_relevant_departments_and_prodev",
+                                                                        "review_by_relevant_departments_prodev_ppic",
                                                                     )}
                                                                 </span>
                                                             ) : (row.overall_status ??

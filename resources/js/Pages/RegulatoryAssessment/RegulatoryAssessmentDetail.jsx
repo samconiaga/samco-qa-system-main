@@ -17,7 +17,8 @@ export default function RegulatoryAssessmentDetail({ changeRequest }) {
                 <DetailItem
                     label={t("product_affected")}
                     value={
-                        changeRequest?.impact_of_change_assesment?.product_affected === "Yes"
+                        changeRequest?.impact_of_change_assesment
+                            ?.product_affected === "Yes"
                             ? t("product_yes")
                             : t("product_no")
                     }
@@ -26,8 +27,12 @@ export default function RegulatoryAssessmentDetail({ changeRequest }) {
                 <DetailItem
                     label={t("facility_affected")}
                     value={
-                        changeRequest?.impact_of_change_assesment?.facility_affected !== "No"
-                            ? t(changeRequest?.impact_of_change_assesment?.facility_affected)
+                        changeRequest?.impact_of_change_assesment
+                            ?.facility_affected !== "No"
+                            ? t(
+                                  changeRequest?.impact_of_change_assesment
+                                      ?.facility_affected,
+                              )
                             : t("facility_no")
                     }
                 />
@@ -35,8 +40,12 @@ export default function RegulatoryAssessmentDetail({ changeRequest }) {
                 <DetailItem
                     label={t("halal_and_regulatory_compilance_evaluation")}
                     value={
-                        changeRequest?.impact_of_change_assesment?.halal_status !== "No"
-                            ? t(changeRequest?.impact_of_change_assesment?.halal_status)
+                        changeRequest?.impact_of_change_assesment
+                            ?.halal_status !== "No"
+                            ? t(
+                                  changeRequest?.impact_of_change_assesment
+                                      ?.halal_status,
+                              )
                             : t("halal_no")
                     }
                 />
@@ -44,41 +53,85 @@ export default function RegulatoryAssessmentDetail({ changeRequest }) {
                 <DetailItem
                     label={t("regulatory_assessment")}
                     value={
-                        changeRequest?.impact_of_change_assesment?.regulatory_related == null
+                        changeRequest?.impact_of_change_assesment
+                            ?.regulatory_related == null
                             ? "-"
-                            : changeRequest?.impact_of_change_assesment?.regulatory_related === "No"
-                                ? t("regulation_no")
-                                : t("regulation_yes")
+                            : changeRequest?.impact_of_change_assesment
+                                    ?.regulatory_related === "No"
+                              ? t("regulation_no")
+                              : t("regulation_yes")
                     }
                 />
 
                 <DetailItem
                     label={t("third_party_involvement")}
                     value={
-                        changeRequest?.impact_of_change_assesment?.third_party_involved
+                        changeRequest?.impact_of_change_assesment
+                            ?.third_party_involved
                             ? t("yes")
                             : t("no")
                     }
                 />
 
-                {changeRequest?.impact_of_change_assesment?.third_party_involved && (
-                    <DetailItem
-                        label={t("third_party_name")}
-                        value={changeRequest?.impact_of_change_assesment?.third_party_name}
-                    />
+                {changeRequest?.impact_of_change_assesment
+                    ?.third_party_involved && (
+                    <>
+                        <DetailItem
+                            label={t("third_party_name")}
+                            value={
+                                changeRequest?.impact_of_change_assesment
+                                    ?.third_party_name
+                            }
+                        />
+
+                        {changeRequest?.impact_of_change_assesment
+                            ?.is_informed_to_toll_manufacturing !== null && (
+                            <DetailItem
+                                label={t("is_informed_to_toll_manufacturing")}
+                                value={
+                                    changeRequest?.impact_of_change_assesment
+                                        ?.is_informed_to_toll_manufacturing
+                                        ? t("yes")
+                                        : t("no")
+                                }
+                            />
+                        )}
+
+                        {changeRequest?.impact_of_change_assesment
+                            ?.is_approval_required_from_toll_manufacturing !==
+                            null && (
+                            <DetailItem
+                                label={t(
+                                    "is_approval_required_from_toll_manufacturing",
+                                )}
+                                value={
+                                    changeRequest?.impact_of_change_assesment
+                                        ?.is_approval_required_from_toll_manufacturing
+                                        ? t("yes")
+                                        : t("no")
+                                }
+                            />
+                        )}
+                    </>
                 )}
 
                 <DetailItem
                     label={t("regulatory_variation")}
-                    value={t(changeRequest?.regulatory?.regulatory_variation ?? "-")}
+                    value={t(
+                        changeRequest?.regulatory?.regulatory_variation ?? "-",
+                    )}
                 />
 
                 <DetailItem
                     label={t("regulatory_change_type")}
-                    value={t(changeRequest?.regulatory?.regulatory_change_type ?? "-")}
+                    value={t(
+                        changeRequest?.regulatory?.regulatory_change_type ??
+                            "-",
+                    )}
                 />
 
-                {changeRequest?.regulatory?.regulatory_change_type === "regulatory_change_type_3" && (
+                {changeRequest?.regulatory?.regulatory_change_type ===
+                    "regulatory_change_type_3" && (
                     <>
                         <DetailItem
                             label={t("reported_by")}
@@ -87,7 +140,9 @@ export default function RegulatoryAssessmentDetail({ changeRequest }) {
 
                         <DetailItem
                             label={t("notification_date")}
-                            value={toDateString(changeRequest?.regulatory?.notification_date)}
+                            value={toDateString(
+                                changeRequest?.regulatory?.notification_date,
+                            )}
                         />
                     </>
                 )}

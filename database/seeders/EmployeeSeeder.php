@@ -75,7 +75,7 @@ class EmployeeSeeder extends Seeder
                 'phone' => '081200000001',
                 'position' => 'PPIC Dept Head',
                 'department' => 'PPIC & Warehouse', // Disesuaikan
-                'permissions' => ['Approve Manager', 'PIC Action Plan']
+                'permissions' => ['Approve Manager', 'PIC Action Plan', 'Review PPIC Manager']
             ],
 
             // 4. QC -> Ubah jadi "Quality Control"

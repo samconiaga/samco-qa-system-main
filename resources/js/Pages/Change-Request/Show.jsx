@@ -180,7 +180,7 @@ export default function Show({ title, changeRequest, ...props }) {
         },
         Reviewed: {
             className: "bg-info",
-            label: "review_by_relevant_departments_and_prodev",
+            label: "review_by_relevant_departments_prodev_ppic",
         },
         "Waiting SPV Approval": {
             className: "bg-warning",
@@ -260,6 +260,32 @@ export default function Show({ title, changeRequest, ...props }) {
                                                     className="menu-icon"
                                                 />
                                                 <span>{t("review")}</span>
+                                            </Link>
+                                        )}
+                                    {permissions.includes(
+                                        "Review PPIC Manager",
+                                    ) &&
+                                        changeRequest
+                                            ?.impact_of_change_assesment
+                                            ?.third_party_involved &&
+                                        changeRequest
+                                            ?.impact_of_change_assesment
+                                            ?.is_informed_to_toll_manufacturing ===
+                                            null && (
+                                            <Link
+                                                href={route(
+                                                    "change-requests.ppic-assessments.index",
+                                                    { id: changeRequest.id },
+                                                )}
+                                                className="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 me-3"
+                                            >
+                                                <Icon
+                                                    icon="mdi:print-preview"
+                                                    className="menu-icon"
+                                                />
+                                                <span>
+                                                    {t("ppic_assessment")}
+                                                </span>
                                             </Link>
                                         )}
                                     {["Reviewed", "In Progress"].includes(

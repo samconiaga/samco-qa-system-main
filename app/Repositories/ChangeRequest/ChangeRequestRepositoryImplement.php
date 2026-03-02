@@ -189,25 +189,36 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
             $regulatoryFilled = (bool) $changeRequest->regulatory;
 
             if ($allReviewed && $regulatoryFilled) {
-                $agreeReviews = $reviews->filter(fn($r) => $r->evaluation_status === 'Agree');
+                // Check PPIC assessment if third party is involved
+                $ppicConditionMet = true;
+                $impactAssesment = $changeRequest->impactOfChangeAssesment;
+                if ($impactAssesment && $impactAssesment->third_party_involved) {
+                    if ($impactAssesment->is_informed_to_toll_manufacturing === null || $impactAssesment->is_approval_required_from_toll_manufacturing === null) {
+                        $ppicConditionMet = false;
+                    }
+                }
 
-                if ($agreeReviews->isEmpty()) {
-                    // Tidak ada Agree → langsung move
-                    $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
-                } else {
-                    // Ada Agree → cek semua action plan mereka Pending
-                    $agreeDepartmentIds = $agreeReviews->pluck('department_id')->toArray();
-                    $pendingDepartments = ActionPlan::where('change_request_id', $changeRequest->id)
-                        ->whereIn('department_id', $agreeDepartmentIds)
-                        ->where('status', 'Pending')
-                        ->pluck('department_id')
-                        ->unique()
-                        ->sort()
-                        ->values()
-                        ->all();
+                if ($ppicConditionMet) {
+                    $agreeReviews = $reviews->filter(fn($r) => $r->evaluation_status === 'Agree');
 
-                    if ($pendingDepartments === $agreeDepartmentIds) {
+                    if ($agreeReviews->isEmpty()) {
+                        // Tidak ada Agree → langsung move
                         $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
+                    } else {
+                        // Ada Agree → cek semua action plan mereka Pending
+                        $agreeDepartmentIds = $agreeReviews->pluck('department_id')->toArray();
+                        $pendingDepartments = ActionPlan::where('change_request_id', $changeRequest->id)
+                            ->whereIn('department_id', $agreeDepartmentIds)
+                            ->where('status', 'Pending')
+                            ->pluck('department_id')
+                            ->unique()
+                            ->sort()
+                            ->values()
+                            ->all();
+
+                        if ($pendingDepartments === $agreeDepartmentIds) {
+                            $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
+                        }
                     }
                 }
             }
@@ -231,6 +242,9 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
                     'halal_status'      => $data['halal_status'] ?? null,
                 ]
             );
+
+            // Refresh the relation so the PPIC check sees fresh data
+            $changeRequest->load('impactOfChangeAssesment');
 
             // 2️⃣ Simpan Regulatory Assessment
             $regulatory = RegulatoryAssesment::updateOrCreate(
@@ -309,10 +323,116 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
 
             // 9️⃣ PINDAH STAGE JIKA SEMUA SYARAT TERPENUHI
             if ($allReviewed && $regulatoryFilled && $agreeReady) {
-                $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
+                // Check PPIC assessment if third party is involved
+                $ppicConditionMet = true;
+                $impactAssesment = $changeRequest->impactOfChangeAssesment;
+                if ($impactAssesment && $impactAssesment->third_party_involved) {
+                    if ($impactAssesment->is_informed_to_toll_manufacturing === null || $impactAssesment->is_approval_required_from_toll_manufacturing === null) {
+                        $ppicConditionMet = false;
+                    }
+                }
+
+                if ($ppicConditionMet) {
+                    $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
+                }
             }
 
             return $regulatory;
+        });
+    }
+
+    public function ppicAssessment($request, $changeRequest)
+    {
+        return DB::transaction(function () use ($request, $changeRequest) {
+
+            $data = $request->all();
+
+            // 1️⃣ Update Impact Of Change Assessment untuk PPIC
+            $impactAssesment = ImpactOfChangeAssesment::updateOrCreate(
+                ['change_request_id' => $data['change_request_id']],
+                [
+                    'is_informed_to_toll_manufacturing' => $data['is_informed_to_toll_manufacturing'],
+                    'is_approval_required_from_toll_manufacturing' => $data['is_approval_required_from_toll_manufacturing'],
+                ]
+            );
+
+            // Refresh the relation so the in-memory model has the latest values
+            $changeRequest->load('impactOfChangeAssesment');
+
+            // 2️⃣ Ambil semua department terkait
+            $relatedIds = $changeRequest->relatedDepartments()
+                ->pluck('department_id')
+                ->toArray();
+
+            // 3️⃣ Ambil semua review
+            $reviews = FollowUpImplementation::where('change_request_id', $changeRequest->id)
+                ->whereIn('department_id', $relatedIds)
+                ->get();
+
+            // 4️⃣ Semua department sudah review?
+            $allReviewed = empty(array_diff(
+                $relatedIds,
+                $reviews->pluck('department_id')->toArray()
+            ));
+
+            // 5️⃣ Regulatory sudah diisi?
+            $regulatoryFilled = $changeRequest->regulatory()->exists();
+
+            // 6️⃣ VALIDASI KHUSUS evaluation_status = Agree
+            $agreeReviews = $reviews->where('evaluation_status', 'Agree');
+            $agreeReady = true;
+
+            if ($agreeReviews->isNotEmpty()) {
+                $agreeDepartmentIds = $agreeReviews->pluck('department_id')->toArray();
+
+                // A. Department yang action plan-nya INVALID
+                $invalidDepartments = ActionPlan::where('change_request_id', $changeRequest->id)
+                    ->whereIn('department_id', $agreeDepartmentIds)
+                    ->where(function ($q) {
+                        $q->whereNull('status')
+                            ->orWhere('status', '!=', 'Pending');
+                    })
+                    ->pluck('department_id')
+                    ->unique()
+                    ->toArray();
+
+                if (!empty($invalidDepartments)) {
+                    $agreeReady = false;
+                }
+
+                // B. Pastikan SEMUA Agree department punya action plan
+                $departmentsWithPlans = ActionPlan::where('change_request_id', $changeRequest->id)
+                    ->whereIn('department_id', $agreeDepartmentIds)
+                    ->pluck('department_id')
+                    ->unique()
+                    ->toArray();
+
+                if (!empty(array_diff($agreeDepartmentIds, $departmentsWithPlans))) {
+                    $agreeReady = false;
+                }
+            }
+
+            // 7️⃣ PINDAH STAGE JIKA SEMUA SYARAT TERPENUHI (PPIC sudah pasti terisi)
+            if ($allReviewed && $regulatoryFilled && $agreeReady) {
+                // Check PPIC assessment if third party is involved (just a safety check, we are setting it here so it shouldn't be null)
+                $ppicConditionMet = true;
+                $impactAssesmentModel = $changeRequest->impactOfChangeAssesment;
+                if ($impactAssesmentModel && $impactAssesmentModel->third_party_involved) {
+                    if ($impactAssesmentModel->is_informed_to_toll_manufacturing === null || $impactAssesmentModel->is_approval_required_from_toll_manufacturing === null) {
+                        // wait, we just updated it above, but we can verify it here
+                        $ppicConditionMet = false;
+                    }
+                    if ($data['is_informed_to_toll_manufacturing'] === null || $data['is_approval_required_from_toll_manufacturing'] === null) {
+                        $ppicConditionMet = false;
+                    }
+                }
+
+                if ($ppicConditionMet) {
+                    $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
+                }
+            }
+
+            return $impactAssesment;
         });
     }
 
@@ -633,7 +753,20 @@ class ChangeRequestRepositoryImplement extends Eloquent implements ChangeRequest
                 return true; // masih ada detail yang belum valid
             }
 
-            // 8️⃣ SEMUA SYARAT TERPENUHI → pindah stage
+            // 8️⃣ Validasi optional PPIC Assessment
+            $ppicConditionMet = true;
+            $impactAssesment = $changeRequest->impactOfChangeAssesment;
+            if ($impactAssesment && $impactAssesment->third_party_involved) {
+                if ($impactAssesment->is_informed_to_toll_manufacturing === null || $impactAssesment->is_approval_required_from_toll_manufacturing === null) {
+                    $ppicConditionMet = false;
+                }
+            }
+
+            if (!$ppicConditionMet) {
+                return true; // PPIC Assessment belum lengkap → stop
+            }
+
+            // 9️⃣ SEMUA SYARAT TERPENUHI → pindah stage
             $this->moveToNextStage($changeRequest, 'To SPV Review', $request);
 
             return true;

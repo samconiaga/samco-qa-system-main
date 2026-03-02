@@ -480,13 +480,16 @@ const id = {
         "waiting_plant_manager_approval": "Menunggu Persetujuan Plant Manajer",
         "waiting_qa_manager_approval": "Menunggu Persetujuan Manajer QA",
         "waiting_initiator_manager_approval": "Menunggu Persetujuan Manajer Inisiator",
-        "review_by_relevant_departments_and_prodev": "Ditinjau Oleh Departemen Terkait dan Prodev",
+        "review_by_relevant_departments_prodev_ppic": "Ditinjau Oleh Departemen Terkait, Prodev, & PPIC",
         "print": "Cetak",
         "extend": "Perpanjang",
         "extend_action_plan": "Perpanjang Rencana Tindakan",
         "current_realization": "Realisasi Saat Ini",
         "confirm_extend_action_plan": "Anda akan memperpanjang rencana tindakan ini dengan detail baru.",
         "field_required": "Kolom ini wajib diisi.",
+        "is_informed_to_toll_manufacturing": "Apakah perubahan akan diinformasikan ke pihak Toll Manufacturing?",
+        "is_approval_required_from_toll_manufacturing": "Apakah perubahan memerlukan persetujuan pihak Toll Manufacturing?",
+        "ppic_assessment": "Penilaian PPIC",
 
     },
 };
