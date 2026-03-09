@@ -41,10 +41,10 @@ RUN composer install --no-dev --optimize-autoloader
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy Nginx configuration
+# Copy Nginx configuration (Sekarang langsung dari folder utama)
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
 EXPOSE 80
 
 # Script untuk menjalankan migrasi dan menyalakan server
-CMD ["sh", "-c", "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "php artisan migrate:fresh --force && php-fpm -D && nginx -g 'daemon off;'"]
